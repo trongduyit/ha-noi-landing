@@ -43,6 +43,119 @@
 
     h1, h2, h3 { font-family: 'Playfair Display', serif; }
 
+    /* ===== NAV MENU ===== */
+    .nav-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 200;
+      background: rgba(250,247,244,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(201,134,154,0.2);
+      transition: all 0.4s ease;
+    }
+
+    .nav-menu.scrolled {
+      box-shadow: 0 2px 20px rgba(61,48,41,0.08);
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 60px;
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      color: var(--brown-dark);
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .nav-logo:hover { color: var(--pink-accent); }
+
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-links a {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 50px;
+      color: var(--brown-light);
+      text-decoration: none;
+      font-size: 0.92rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      background: var(--pink-light);
+      color: var(--pink-accent);
+    }
+
+    .nav-links .nav-cta {
+      background: var(--pink-accent);
+      color: white;
+    }
+
+    .nav-links .nav-cta:hover {
+      background: var(--pink-dark);
+      color: white;
+    }
+
+    /* Mobile menu toggle */
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--brown-dark);
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+
+    @media (max-width: 768px) {
+      .nav-toggle { display: flex; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        background: rgba(250,247,244,0.98);
+        backdrop-filter: blur(20px);
+        padding: 16px;
+        gap: 4px;
+        border-bottom: 1px solid rgba(201,134,154,0.2);
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { width: 100%; justify-content: center; }
+    }
+
     /* ===== HERO SECTION ===== */
     .hero {
       position: relative;
@@ -69,8 +182,8 @@
       inset: 0;
       background: linear-gradient(
         180deg,
-        rgba(242,220,232,0.65) 0%,
-        rgba(245,247,244,0.70) 40%,
+        rgba(242,220,232,0.7) 0%,
+        rgba(245,247,244,0.75) 40%,
         rgba(181,199,211,0.25) 70%,
         rgba(242,220,232,0.55) 100%
       );
@@ -82,61 +195,50 @@
       z-index: 2;
       text-align: center;
       padding: 0 20px;
-      animation: fadeInUp 1.2s ease-out;
     }
 
     .hero-title {
-      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-size: clamp(3rem, 7vw, 5.5rem);
       font-weight: 700;
       color: var(--brown-dark);
-      text-shadow: 0 2px 24px rgba(201,134,154,0.25);
+      text-shadow: 0 2px 40px rgba(201,134,154,0.3);
       letter-spacing: 0.02em;
       line-height: 1.1;
+      animation: heroTitleIn 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      opacity: 0;
     }
 
     .hero-subtitle {
       font-size: clamp(1rem, 2vw, 1.3rem);
       color: var(--brown-light);
-      margin-top: 16px;
+      margin-top: 20px;
       font-style: italic;
       font-family: 'Playfair Display', serif;
-      animation: fadeInUp 1.2s ease-out 0.3s both;
+      animation: heroTitleIn 1.5s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;
+      opacity: 0;
     }
 
-    /* Music toggle button */
-    .music-toggle {
-      position: fixed;
-      top: 24px;
-      right: 24px;
-      z-index: 100;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 1.5px solid rgba(201,134,154,0.5);
-      background: rgba(255,255,255,0.7);
-      backdrop-filter: blur(8px);
+    .hero-petal {
+      position: absolute;
       font-size: 1.2rem;
-      cursor: pointer;
-      color: var(--pink-accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
+      opacity: 0;
+      animation: petalFall linear infinite;
+      z-index: 1;
+      pointer-events: none;
     }
 
-    .music-toggle:hover {
-      background: rgba(255,255,255,0.9);
-      border-color: var(--pink-accent);
-      transform: scale(1.05);
+    @keyframes petalFall {
+      0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.7; }
+      90% { opacity: 0.5; }
+      100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
     }
 
-    .music-toggle.playing {
-      background: var(--pink-accent);
-      color: var(--white);
-      border-color: var(--pink-accent);
+    @keyframes heroTitleIn {
+      from { opacity: 0; transform: translateY(40px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    /* Scroll hint */
     .scroll-hint {
       position: absolute;
       bottom: 32px;
@@ -145,13 +247,13 @@
       z-index: 2;
       font-size: 1.5rem;
       color: var(--brown-light);
-      animation: bounce 2s infinite;
-      opacity: 0.6;
+      animation: bounce 2s infinite, fadeInUp 1.5s ease 1s both;
+      opacity: 0;
     }
 
     @keyframes bounce {
       0%, 100% { transform: translateX(-50%) translateY(0); }
-      50% { transform: translateX(-50%) translateY(8px); }
+      50% { transform: translateX(-50%) translateY(10px); }
     }
 
     @keyframes fadeInUp {
@@ -159,30 +261,325 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* ===== MUSIC PLAYER PANEL ===== */
+    .music-player {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 300;
+    }
+
+    .music-btn {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(201,134,154,0.5);
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      font-size: 1.3rem;
+      cursor: pointer;
+      color: var(--pink-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: 0 4px 20px rgba(201,134,154,0.2);
+    }
+
+    .music-btn:hover { transform: scale(1.1); }
+    .music-btn.playing {
+      background: var(--pink-accent);
+      color: white;
+      border-color: var(--pink-accent);
+      box-shadow: 0 4px 24px rgba(201,134,154,0.4);
+    }
+
+    .music-panel {
+      position: absolute;
+      bottom: 64px;
+      right: 0;
+      width: 280px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      border: 1px solid rgba(201,134,154,0.2);
+      box-shadow: 0 16px 48px rgba(61,48,41,0.15);
+      padding: 20px;
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+      animation: panelSlideIn 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .music-panel.open { display: flex; }
+
+    @keyframes panelSlideIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .music-panel-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--brown-dark);
+      text-align: center;
+    }
+
+    .music-wave {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 3px;
+      height: 32px;
+    }
+
+    .music-wave span {
+      width: 4px;
+      background: var(--pink-accent);
+      border-radius: 4px;
+      transition: height 0.2s;
+    }
+
+    .music-wave.paused span { height: 4px !important; }
+
+    .music-wave span:nth-child(1) { animation: wave 1.2s ease-in-out infinite; }
+    .music-wave span:nth-child(2) { animation: wave 1.2s ease-in-out 0.15s infinite; }
+    .music-wave span:nth-child(3) { animation: wave 1.2s ease-in-out 0.3s infinite; }
+    .music-wave span:nth-child(4) { animation: wave 1.2s ease-in-out 0.45s infinite; }
+    .music-wave span:nth-child(5) { animation: wave 1.2s ease-in-out 0.6s infinite; }
+    .music-wave span:nth-child(6) { animation: wave 1.2s ease-in-out 0.75s infinite; }
+
+    @keyframes wave {
+      0%, 100% { height: 8px; }
+      50% { height: 28px; }
+    }
+
+    .music-volume-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .music-volume-row span { font-size: 0.8rem; color: var(--brown-light); }
+
+    .volume-slider {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 4px;
+      border-radius: 4px;
+      background: var(--pink-light);
+      outline: none;
+    }
+
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--pink-accent);
+      cursor: pointer;
+    }
+
+    .music-tip {
+      font-size: 0.75rem;
+      color: var(--brown-light);
+      text-align: center;
+      font-style: italic;
+    }
+
     /* ===== SECTION COMMON ===== */
     .section {
       padding: 80px 20px;
     }
 
-    .section-title {
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
+    .section-header {
       text-align: center;
       margin-bottom: 48px;
-      color: var(--brown-dark);
-      position: relative;
     }
 
-    .section-title::after {
-      content: '🌸';
-      display: block;
-      font-size: 1.2rem;
-      margin-top: 12px;
-      opacity: 0.6;
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: var(--brown-dark);
+    }
+
+    .section-subtitle {
+      font-size: 1rem;
+      color: var(--brown-light);
+      margin-top: 8px;
+      font-style: italic;
+      font-family: 'Playfair Display', serif;
+    }
+
+    /* ===== SLIDESHOW SECTION ===== */
+    .slideshow-section {
+      background: var(--cream);
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .slideshow-wrapper {
+      position: relative;
+      max-width: 900px;
+      margin: 0 auto;
+      border-radius: 24px;
+      overflow: hidden;
+    }
+
+    .slideshow-track {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+    }
+
+    .slideshow-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 1.2s ease, transform 1.2s ease;
+      transform: scale(1.02);
+    }
+
+    .slideshow-slide.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .slideshow-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Ken Burns effect */
+    .slideshow-slide.active .ken-burns {
+      animation: kenBurns 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes kenBurns {
+      from { transform: scale(1) translateX(0); }
+      to { transform: scale(1.08) translateX(-2%); }
+    }
+
+    .slideshow-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(61,48,41,0.4) 100%);
+      pointer-events: none;
+    }
+
+    .slideshow-caption {
+      position: absolute;
+      bottom: 24px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      color: white;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      padding: 0 20px;
+    }
+
+    .slideshow-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 20px;
+      background: linear-gradient(180deg, transparent, rgba(250,247,244,0.8));
+    }
+
+    .slideshow-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--pink-light);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .slideshow-dot.active {
+      background: var(--pink-accent);
+      width: 24px;
+      border-radius: 8px;
+    }
+
+    .slideshow-controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      padding-bottom: 32px;
+    }
+
+    .slideshow-ctrl {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: white;
+      border: 1.5px solid var(--pink-light);
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      color: var(--pink-accent);
+    }
+
+    .slideshow-ctrl:hover {
+      background: var(--pink-accent);
+      color: white;
+      transform: scale(1.1);
+    }
+
+    .slideshow-ctrl.play-btn {
+      width: 56px;
+      height: 56px;
+      background: var(--pink-accent);
+      color: white;
+      border: none;
+      font-size: 1.3rem;
+    }
+
+    .slideshow-ctrl.play-btn:hover {
+      background: var(--pink-dark);
     }
 
     /* ===== ALBUM DATASET ===== */
     .album-dataset {
       background: linear-gradient(180deg, var(--cream) 0%, var(--pink-light) 100%);
+    }
+
+    /* View toggle */
+    .view-toggle {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+
+    .view-btn {
+      padding: 8px 20px;
+      border-radius: 50px;
+      border: 1.5px solid var(--pink-light);
+      background: white;
+      color: var(--brown-light);
+      font-size: 0.88rem;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .view-btn:hover,
+    .view-btn.active {
+      border-color: var(--pink-accent);
+      background: var(--pink-light);
+      color: var(--pink-accent);
     }
 
     .photo-grid {
@@ -193,20 +590,38 @@
       gap: 16px;
     }
 
+    /* Masonry layout */
+    .photo-grid.masonry {
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: 120px;
+    }
+
+    .photo-grid.masonry .photo-item:nth-child(3n+1) { grid-row: span 2; }
+
+    /* List layout */
+    .photo-grid.list {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .photo-grid.list .photo-item {
+      aspect-ratio: 16/6;
+    }
+
     .photo-item {
       position: relative;
-      border-radius: 12px;
+      border-radius: 16px;
       overflow: hidden;
       cursor: pointer;
       aspect-ratio: 1;
       background: var(--pink-light);
       box-shadow: 0 4px 16px rgba(61,48,41,0.08);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s;
     }
 
     .photo-item:hover {
-      transform: scale(1.03);
-      box-shadow: 0 8px 32px rgba(61,48,41,0.18);
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 16px 48px rgba(61,48,41,0.18);
     }
 
     .photo-item img {
@@ -214,11 +629,60 @@
       height: 100%;
       object-fit: cover;
       display: block;
+      transition: transform 0.6s ease;
+    }
+
+    .photo-item:hover img { transform: scale(1.08); }
+
+    .photo-item-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(61,48,41,0.6) 100%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      display: flex;
+      align-items: flex-end;
+      padding: 16px;
+    }
+
+    .photo-item:hover .photo-item-overlay { opacity: 1; }
+
+    .photo-item-overlay span {
+      color: white;
+      font-size: 0.85rem;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
     }
 
     /* ===== UPLOAD SECTION ===== */
     .upload-section {
       background: linear-gradient(180deg, var(--pink-light) 0%, var(--blue-lav) 100%);
+    }
+
+    .upload-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      margin-bottom: 24px;
+    }
+
+    .upload-tab {
+      padding: 8px 24px;
+      border-radius: 50px;
+      border: 1.5px solid rgba(201,134,154,0.3);
+      background: rgba(255,255,255,0.5);
+      color: var(--brown-light);
+      font-size: 0.92rem;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .upload-tab.active {
+      background: white;
+      border-color: var(--pink-accent);
+      color: var(--pink-accent);
+      font-weight: 600;
     }
 
     .upload-container {
@@ -228,12 +692,12 @@
 
     .upload-zone {
       border: 2px dashed var(--pink-accent);
-      border-radius: 20px;
+      border-radius: 24px;
       padding: 60px 40px;
       text-align: center;
       background: rgba(255,255,255,0.5);
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
       position: relative;
     }
 
@@ -242,6 +706,14 @@
       border-style: solid;
       background: rgba(201,134,154,0.1);
       transform: scale(1.01);
+      box-shadow: 0 8px 32px rgba(201,134,154,0.15);
+    }
+
+    .upload-zone.drag-over .upload-icon { animation: pulse 0.6s ease infinite; }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
     }
 
     .upload-zone input[type="file"] {
@@ -252,9 +724,10 @@
     }
 
     .upload-icon {
-      font-size: 3rem;
+      font-size: 3.5rem;
       margin-bottom: 16px;
       display: block;
+      transition: transform 0.3s;
     }
 
     .upload-text {
@@ -262,17 +735,41 @@
       color: var(--brown-light);
     }
 
-    .upload-text strong {
-      color: var(--pink-accent);
+    .upload-text strong { color: var(--pink-accent); }
+
+    /* Upload progress */
+    .upload-progress {
+      max-width: 720px;
+      margin: 0 auto 20px;
+      display: none;
+    }
+
+    .upload-progress.active { display: block; }
+
+    .progress-bar-wrap {
+      background: rgba(255,255,255,0.6);
+      border-radius: 50px;
+      height: 8px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--pink-accent), var(--blue-sea));
+      border-radius: 50px;
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .progress-text {
+      text-align: center;
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: var(--brown-light);
     }
 
     /* Preview area */
-    .preview-area {
-      display: none;
-      margin-top: 24px;
-      text-align: center;
-    }
-
+    .preview-area { display: none; margin-top: 24px; }
     .preview-area.active { display: block; }
 
     .preview-grid {
@@ -285,10 +782,18 @@
 
     .preview-item {
       position: relative;
-      width: 120px;
-      height: 120px;
-      border-radius: 12px;
+      width: 130px;
+      height: 130px;
+      border-radius: 14px;
       overflow: hidden;
+      animation: previewIn 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      border: 2px solid white;
+      box-shadow: 0 4px 12px rgba(61,48,41,0.1);
+    }
+
+    @keyframes previewIn {
+      from { opacity: 0; transform: scale(0.8) rotate(-5deg); }
+      to { opacity: 1; transform: scale(1) rotate(0); }
     }
 
     .preview-item img {
@@ -301,43 +806,113 @@
       position: absolute;
       top: 4px;
       right: 4px;
-      width: 24px;
-      height: 24px;
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
-      background: rgba(176,107,127,0.85);
+      background: rgba(176,107,127,0.9);
       color: white;
       border: none;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .preview-remove:hover { background: #8B3A4A; }
+
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
     .btn-save {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       background: var(--pink-accent);
       color: white;
       border: none;
       border-radius: 50px;
-      padding: 14px 36px;
-      font-size: 1.05rem;
+      padding: 14px 32px;
+      font-size: 1rem;
       font-family: 'Nunito', sans-serif;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
-      margin-top: 8px;
+      transition: all 0.3s;
     }
 
     .btn-save:hover {
       background: var(--pink-dark);
-      transform: scale(1.03);
-      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(201,134,154,0.3);
+    }
+
+    .btn-cancel {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      color: var(--brown-light);
+      border: 1.5px solid var(--pink-light);
+      border-radius: 50px;
+      padding: 14px 28px;
+      font-size: 1rem;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-cancel:hover {
+      background: var(--pink-light);
+      color: var(--brown-dark);
     }
 
     /* ===== PERSONAL ALBUM ===== */
     .album-personal {
       background: linear-gradient(180deg, var(--blue-lav) 0%, var(--cream) 100%);
+    }
+
+    .personal-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      padding: 8px 20px;
+      border-radius: 50px;
+      border: 1.5px solid rgba(138,172,200,0.5);
+      background: white;
+      color: var(--blue-sea);
+      font-size: 0.88rem;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .action-btn:hover,
+    .action-btn.danger:hover {
+      transform: translateY(-2px);
+    }
+
+    .action-btn.danger {
+      border-color: rgba(201,134,154,0.4);
+      color: var(--pink-accent);
+    }
+
+    .action-btn.danger:hover {
+      background: #fef0f3;
+      border-color: #C9869A;
     }
 
     .personal-grid {
@@ -350,16 +925,22 @@
 
     .personal-item {
       position: relative;
-      border-radius: 12px;
+      border-radius: 16px;
       overflow: hidden;
       aspect-ratio: 1;
       box-shadow: 0 4px 16px rgba(61,48,41,0.08);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s;
+      animation: itemIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    }
+
+    @keyframes itemIn {
+      from { opacity: 0; transform: scale(0.9) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
     }
 
     .personal-item:hover {
-      transform: scale(1.03);
-      box-shadow: 0 8px 32px rgba(61,48,41,0.18);
+      transform: translateY(-6px);
+      box-shadow: 0 16px 48px rgba(61,48,41,0.18);
     }
 
     .personal-item img {
@@ -368,26 +949,46 @@
       object-fit: cover;
     }
 
-    .personal-delete {
+    .personal-item-actions {
       position: absolute;
       top: 8px;
       right: 8px;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: rgba(176,107,127,0.85);
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 1rem;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s;
+      display: flex;
+      gap: 6px;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: all 0.3s;
     }
 
-    .personal-item:hover .personal-delete { display: flex; }
-    .personal-delete:hover { background: #8B3A4A; }
+    .personal-item:hover .personal-item-actions {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .personal-action-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .personal-action-btn.view-btn {
+      background: rgba(255,255,255,0.85);
+      color: var(--brown-dark);
+    }
+
+    .personal-action-btn.delete-btn {
+      background: rgba(239,68,68,0.85);
+      color: white;
+    }
+
+    .personal-action-btn.delete-btn:hover { background: rgba(220,38,38,1); }
 
     /* Empty state */
     .empty-state {
@@ -396,15 +997,116 @@
       color: var(--brown-light);
     }
 
-    .empty-icon { font-size: 3rem; display: block; margin-bottom: 16px; }
+    .empty-icon { font-size: 3.5rem; display: block; margin-bottom: 16px; animation: float 3s ease-in-out infinite; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
     .empty-text { font-size: 1.05rem; }
+    .empty-sub { font-size: 0.9rem; margin-top: 8px; color: var(--brown-light); }
+
+    /* ===== SLIDESHOW FOR PERSONAL ===== */
+    .personal-slideshow {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      background: rgba(0,0,0,0.92);
+      flex-direction: column;
+    }
+
+    .personal-slideshow.active { display: flex; }
+
+    .ps-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      background: rgba(0,0,0,0.4);
+    }
+
+    .ps-title {
+      color: white;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+    }
+
+    .ps-close {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .ps-close:hover { background: rgba(255,255,255,0.2); }
+
+    .ps-track {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 0 80px;
+    }
+
+    .ps-slide {
+      max-width: 80vw;
+      max-height: 70vh;
+      border-radius: 16px;
+      object-fit: contain;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .ps-slide.active { opacity: 1; transform: scale(1); }
+
+    .ps-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .ps-nav:hover { background: rgba(255,255,255,0.2); }
+    .ps-prev { left: 16px; }
+    .ps-next { right: 16px; }
+
+    .ps-counter {
+      text-align: center;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.9rem;
+      padding: 16px;
+    }
 
     /* ===== LIGHTBOX ===== */
     .lightbox {
       display: none;
       position: fixed;
       inset: 0;
-      z-index: 1000;
+      z-index: 400;
       background: rgba(0,0,0,0.88);
       align-items: center;
       justify-content: center;
@@ -415,15 +1117,15 @@
     .lightbox-img {
       max-width: 90vw;
       max-height: 85vh;
-      border-radius: 12px;
+      border-radius: 16px;
       object-fit: contain;
       box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-      animation: lightboxIn 0.3s ease-out;
+      animation: lightboxIn 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     @keyframes lightboxIn {
-      from { opacity: 0; transform: scale(0.85); }
-      to { opacity: 1; transform: scale(1); }
+      from { opacity: 0; transform: scale(0.85) rotate(-2deg); }
+      to { opacity: 1; transform: scale(1) rotate(0); }
     }
 
     .lightbox-close {
@@ -435,10 +1137,11 @@
       background: none;
       border: none;
       cursor: pointer;
-      opacity: 0.8;
+      opacity: 0.7;
       transition: opacity 0.2s;
-      z-index: 1001;
+      z-index: 401;
     }
+
     .lightbox-close:hover { opacity: 1; }
 
     .lightbox-nav {
@@ -458,8 +1161,9 @@
       justify-content: center;
       opacity: 0.7;
       transition: opacity 0.2s, background 0.2s;
-      z-index: 1001;
+      z-index: 401;
     }
+
     .lightbox-nav:hover { opacity: 1; background: rgba(255,255,255,0.2); }
     .lightbox-prev { left: 20px; }
     .lightbox-next { right: 20px; }
@@ -486,16 +1190,13 @@
       border-radius: 2px;
     }
 
-    .footer-copy {
-      font-size: 0.9rem;
-      color: var(--brown-light);
-    }
+    .footer-copy { font-size: 0.9rem; color: var(--brown-light); }
 
     /* ===== SCROLL REVEAL ===== */
     .reveal {
       opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
     }
 
     .reveal.visible {
@@ -505,13 +1206,21 @@
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 1024px) {
-      .photo-grid, .personal-grid { grid-template-columns: repeat(2, 1fr); }
+      .photo-grid { grid-template-columns: repeat(2, 1fr); }
+      .photo-grid.masonry { grid-template-columns: repeat(3, 1fr); }
     }
 
     @media (max-width: 768px) {
-      .photo-grid, .personal-grid { grid-template-columns: 1fr; }
+      .photo-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .photo-grid.masonry { grid-template-columns: repeat(2, 1fr); }
+      .photo-grid.list { grid-template-columns: 1fr; }
       .section { padding: 60px 16px; }
       .upload-zone { padding: 40px 20px; }
+      .slideshow-wrapper { border-radius: 0; }
+      .ps-nav { width: 40px; height: 40px; font-size: 1.2rem; }
+      .ps-track { padding: 0 20px; }
+      .ps-slide { max-width: 95vw; }
+      .music-panel { right: -60px; width: 260px; }
     }
 
     /* ===== AUDIO (hidden) ===== */
@@ -519,6 +1228,22 @@
   </style>
 </head>
 <body>
+
+  <!-- NAV MENU -->
+  <nav class="nav-menu" id="navMenu">
+    <div class="nav-inner">
+      <a class="nav-logo" href="#hero">🌸 Hà Nội Dịu Dàng</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#slideshow"><span>🎬</span> Chiếu Ảnh</a></li>
+        <li><a href="#dataset"><span>📸</span> Album HN</a></li>
+        <li><a href="#upload"><span>📷</span> Upload</a></li>
+        <li><a href="#personal"><span>💎</span> Album Riêng</a></li>
+      </ul>
+    </div>
+  </nav>
 
   <!-- HERO -->
   <section class="hero" id="hero">
@@ -530,51 +1255,116 @@
       <h1 class="hero-title">Hà Nội Dịu Dàng</h1>
       <p class="hero-subtitle">Một góc Hà Nội trong ánh nắng mùa thu</p>
     </div>
-    <button class="music-toggle" id="musicToggle" title="Bật nhạc nền" aria-label="Bật/tắt nhạc nền">♪</button>
     <div class="scroll-hint">↓</div>
   </section>
+
+  <!-- MUSIC PLAYER -->
+  <div class="music-player">
+    <div class="music-panel" id="musicPanel">
+      <div class="music-panel-title">✨ Nhạc Nền Dịu Dàng</div>
+      <div class="music-wave paused" id="musicWave">
+        <span style="height:8px"></span><span style="height:12px"></span>
+        <span style="height:6px"></span><span style="height:20px"></span>
+        <span style="height:10px"></span><span style="height:14px"></span>
+      </div>
+      <div class="music-volume-row">
+        <span>🔈</span>
+        <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="30">
+        <span>🔊</span>
+      </div>
+      <p class="music-tip">🎹 Nhạc piano nhẹ nhàng — bấm nút ▶ để phát</p>
+    </div>
+    <button class="music-btn" id="musicBtn" title="Nhạc nền">🎵</button>
+  </div>
 
   <!-- Hidden audio element -->
   <audio id="bgMusic" loop>
     <source src="assets/music/music.mp3" type="audio/mpeg">
   </audio>
 
+  <!-- SLIDESHOW SECTION -->
+  <section class="section slideshow-section" id="slideshow">
+    <div class="section-header reveal">
+      <h2 class="section-title">Chiếu Ảnh</h2>
+      <p class="section-subtitle">Những khoảnh khắc đẹp nhất của Hà Nội</p>
+    </div>
+    <div class="slideshow-wrapper reveal">
+      <div class="slideshow-track" id="slideshowTrack">
+        <!-- Slides rendered by JS -->
+      </div>
+      <div class="slideshow-dots" id="slideshowDots"></div>
+    </div>
+    <div class="slideshow-controls reveal">
+      <button class="slideshow-ctrl" id="ssPrev" title="Ảnh trước">‹</button>
+      <button class="slideshow-ctrl play-btn" id="ssPlay" title="Tự động chiếu">▶</button>
+      <button class="slideshow-ctrl" id="ssNext" title="Ảnh sau">›</button>
+    </div>
+  </section>
+
   <!-- ALBUM DATASET -->
   <section class="section album-dataset" id="dataset">
-    <h2 class="section-title reveal">Góc Hà Nội</h2>
-    <div class="photo-grid" id="datasetGrid">
-      <!-- Ảnh được render bằng JS -->
+    <div class="section-header reveal">
+      <h2 class="section-title">Góc Hà Nội</h2>
+      <p class="section-subtitle">42 khoảnh khắc từ khắp Hà Nội</p>
     </div>
+    <div class="view-toggle reveal">
+      <button class="view-btn active" data-view="grid">⊞ Lưới</button>
+      <button class="view-btn" data-view="masonry">▦ Ghép</button>
+      <button class="view-btn" data-view="list">☰ Danh sách</button>
+    </div>
+    <div class="photo-grid grid reveal" id="datasetGrid"></div>
   </section>
 
   <!-- UPLOAD -->
   <section class="section upload-section" id="upload">
-    <h2 class="section-title reveal">Khoảnh Khắc Của Bạn</h2>
+    <div class="section-header reveal">
+      <h2 class="section-title">Khoảnh Khắc Của Bạn</h2>
+      <p class="section-subtitle">Lưu giữ những kỷ niệm đẹp của riêng bạn</p>
+    </div>
     <div class="upload-container reveal">
       <div class="upload-zone" id="uploadZone">
         <span class="upload-icon">📷</span>
         <p class="upload-text">
           Kéo thả ảnh vào đây hoặc <strong>click để chọn</strong><br>
-          <small>Hỗ trợ JPG, PNG, WebP</small>
+          <small>Hỗ trợ JPG, PNG, WebP, GIF</small>
         </p>
         <input type="file" id="fileInput" accept="image/*" multiple>
       </div>
+      <div class="upload-progress" id="uploadProgress">
+        <div class="progress-bar-wrap">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <p class="progress-text" id="progressText">Đang xử lý...</p>
+      </div>
       <div class="preview-area" id="previewArea">
+        <p style="text-align:center;color:var(--brown-light);margin-bottom:12px;font-size:0.9rem;">
+          Đã chọn <strong id="previewCount">0</strong> ảnh — kiểm tra và lưu
+        </p>
         <div class="preview-grid" id="previewGrid"></div>
-        <button class="btn-save" id="btnSave">💾 Lưu Album Riêng</button>
+        <div class="btn-group">
+          <button class="btn-save" id="btnSave">💾 Lưu Album Riêng</button>
+          <button class="btn-cancel" id="btnCancel">✕ Hủy</button>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- PERSONAL ALBUM -->
   <section class="section album-personal" id="personal">
-    <h2 class="section-title reveal">Album Của Bạn</h2>
-    <div class="personal-grid" id="personalGrid">
-      <!-- Rendered by JS -->
+    <div class="section-header reveal">
+      <h2 class="section-title">Album Của Bạn</h2>
+      <p class="section-subtitle" id="personalCount">0 khoảnh khắc đã lưu</p>
     </div>
+    <div class="personal-actions reveal" id="personalActions" style="display:none">
+      <button class="action-btn" id="btnSlideshow">🎬 Chiếu Album</button>
+      <button class="action-btn" id="btnShuffle">🔀 Xáo Trộn</button>
+      <button class="action-btn danger" id="btnClearAll">🗑️ Xóa Tất Cả</button>
+    </div>
+    <div class="personal-grid" id="personalGrid"></div>
     <div class="empty-state" id="emptyState">
       <span class="empty-icon">🌸</span>
-      <p class="empty-text">Chưa có ảnh nào trong album riêng của bạn</p>
+      <p class="empty-text">Chưa có ảnh nào trong album riêng</p>
+      <p class="empty-sub">Upload ảnh bên trên để bắt đầu</p>
     </div>
   </section>
 
@@ -582,15 +1372,29 @@
   <footer class="footer">
     <div class="footer-divider"></div>
     <p class="footer-text">Một góc Hà Nội</p>
-    <p class="footer-copy">© 2026 — Hà Nội Dịu Dàng</p>
+    <p class="footer-copy">© 2026 — Hà Nội Dịu Dàng 🌸</p>
   </footer>
 
   <!-- LIGHTBOX -->
   <div class="lightbox" id="lightbox">
-    <button class="lightbox-close" id="lightboxClose" aria-label="Đóng">×</button>
-    <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Ảnh trước">‹</button>
+    <button class="lightbox-close" id="lightboxClose">×</button>
+    <button class="lightbox-nav lightbox-prev" id="lightboxPrev">‹</button>
+    <button class="lightbox-nav lightbox-next" id="lightboxNext">›</button>
     <img class="lightbox-img" id="lightboxImg" src="" alt="">
-    <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Ảnh sau">›</button>
+  </div>
+
+  <!-- PERSONAL SLIDESHOW -->
+  <div class="personal-slideshow" id="personalSlideshow">
+    <div class="ps-topbar">
+      <span class="ps-title">Album Của Bạn</span>
+      <button class="ps-close" id="psClose">×</button>
+    </div>
+    <div class="ps-track">
+      <button class="ps-nav ps-prev" id="psPrev">‹</button>
+      <img class="ps-slide" id="psSlide" src="" alt="">
+      <button class="ps-nav ps-next" id="psNext">›</button>
+    </div>
+    <div class="ps-counter" id="psCounter">1 / 1</div>
   </div>
 
   <script>
@@ -615,7 +1419,7 @@
       "assets/images/z7740997162265_d7a5dfffb5c19c0b53b8ec11e750baa7.jpg",
       "assets/images/z7740997165288_3c9a688260e0a7919538d5770850eec7.jpg",
       "assets/images/z7740997165452_c4761caeac627387c52d6e2fc2aaac80.jpg",
-      "assets/images/z7740997175344_eb64c5ceec3419f9b1499c99dda3dc7e.jpg",
+      "assets/images/z7740997175344_eb64c5ceec3419f9b149c9c99dda3dc7e.jpg",
       "assets/images/z7740997180113_98c46db97f1b0d6b05cf32dfbc701a2c.jpg",
       "assets/images/z7740997180446_ed1169227c345e5a1ac8168c01f2b113.jpg",
       "assets/images/z7740997188623_97abbade42420040b34d9f0c51896e39.jpg",
@@ -623,7 +1427,7 @@
       "assets/images/z7740997194928_78b1f7073326a74b9fe839bf6772e729.jpg",
       "assets/images/z7740997198082_4d10073181ca9c7a5a1e614b0b6d9bd1.jpg",
       "assets/images/z7740997202132_9a8d0cdf97e1bf46eef0ba25c2dd7276.jpg",
-      "assets/images/z7740997208035_7a8eea6818748d4bbbb0055f4a5c9bf3.jpg",
+      "assets/images/z7740997208035_7a8ee6818748d4bbbb0055f4a5c9bf3.jpg",
       "assets/images/z7740997215321_7bd6527a509ec6631236ee1eb1a0feac.jpg",
       "assets/images/z7740997215551_eb58271d799959522c7e62ab477bc328.jpg",
       "assets/images/z7740997221704_a3ca5a846e179649493f0e123eb9804b.jpg",
@@ -642,7 +1446,7 @@
 
     /* ===== INDEXEDDB ===== */
     const DB_NAME = 'hanoi_album_db';
-    const DB_VERSION = 1;
+    const DB_VERSION = 2;
     const STORE_NAME = 'images';
     let db = null;
 
@@ -660,7 +1464,7 @@
       });
     }
 
-    function saveImages(images) {
+    async function saveImages(images) {
       return new Promise((resolve, reject) => {
         const tx = db.transaction(STORE_NAME, 'readwrite');
         const store = tx.objectStore(STORE_NAME);
@@ -670,7 +1474,7 @@
       });
     }
 
-    function getAllImages() {
+    async function getAllImages() {
       return new Promise((resolve, reject) => {
         const tx = db.transaction(STORE_NAME, 'readonly');
         const store = tx.objectStore(STORE_NAME);
@@ -680,7 +1484,7 @@
       });
     }
 
-    function deleteImage(id) {
+    async function deleteImage(id) {
       return new Promise((resolve, reject) => {
         const tx = db.transaction(STORE_NAME, 'readwrite');
         const store = tx.objectStore(STORE_NAME);
@@ -690,31 +1494,266 @@
       });
     }
 
+    async function clearAllImages() {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        store.clear();
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    }
+
+    /* ===== PETALS ANIMATION ===== */
+    function createPetals() {
+      const petals = ['🌸', '🌺', '🍃', '✨'];
+      const hero = document.getElementById('hero');
+      for (let i = 0; i < 12; i++) {
+        const petal = document.createElement('div');
+        petal.className = 'hero-petal';
+        petal.textContent = petals[Math.floor(Math.random() * petals.length)];
+        petal.style.left = Math.random() * 100 + '%';
+        petal.style.animationDuration = (8 + Math.random() * 8) + 's';
+        petal.style.animationDelay = Math.random() * 8 + 's';
+        petal.style.fontSize = (0.8 + Math.random() * 0.8) + 'rem';
+        hero.appendChild(petal);
+      }
+    }
+
+    /* ===== NAV MENU ===== */
+    const navMenu = document.getElementById('navMenu');
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+
+    navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+
+    window.addEventListener('scroll', () => {
+      navMenu.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    navLinks.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+
+    /* ===== MUSIC PLAYER (Web Audio API fallback) ===== */
+    let audioCtx = null;
+    let musicPlaying = false;
+    let activeOscillators = [];
+
+    const musicBtn = document.getElementById('musicBtn');
+    const musicPanel = document.getElementById('musicPanel');
+    const musicWave = document.getElementById('musicWave');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const bgMusic = document.getElementById('bgMusic');
+
+    // Piano notes frequencies (A minor pentatonic + ambient)
+    const NOTE_FREQS = [220, 261.63, 293.66, 329.63, 392, 440, 523.25, 587.33, 659.25, 784, 880];
+
+    function startAmbientMusic() {
+      if (audioCtx) return;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      playAmbientLoop();
+    }
+
+    function playAmbientLoop() {
+      if (!audioCtx || !musicPlaying) return;
+      const now = audioCtx.currentTime;
+      const vol = parseFloat(volumeSlider.value) / 100 * 0.06;
+
+      // Soft drone pad
+      const osc1 = audioCtx.createOscillator();
+      const osc2 = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      const filter = audioCtx.createBiquadFilter();
+
+      osc1.type = 'sine';
+      osc2.type = 'sine';
+      osc1.frequency.value = 110;
+      osc2.frequency.value = 165;
+
+      filter.type = 'lowpass';
+      filter.frequency.value = 400;
+
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(vol, now + 3);
+      gain.gain.setValueAtTime(vol, now + 12);
+      gain.gain.linearRampToValueAtTime(0, now + 15);
+
+      osc1.connect(filter);
+      osc2.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc1.start(now);
+      osc2.start(now);
+      osc1.stop(now + 15);
+      osc2.stop(now + 15);
+
+      // Random gentle piano notes
+      setTimeout(() => {
+        if (musicPlaying) {
+          const note = NOTE_FREQS[Math.floor(Math.random() * NOTE_FREQS.length)];
+          const osc = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.value = note;
+          g.gain.setValueAtTime(0, audioCtx.currentTime);
+          g.gain.linearRampToValueAtTime(vol * 2, audioCtx.currentTime + 0.5);
+          g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 4);
+          osc.connect(g);
+          g.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 4);
+          playAmbientLoop();
+        }
+      }, 3000 + Math.random() * 5000);
+    }
+
+    function stopMusic() {
+      musicPlaying = false;
+      if (audioCtx) {
+        audioCtx.close();
+        audioCtx = null;
+      }
+    }
+
+    function toggleMusic() {
+      if (musicPlaying) {
+        stopMusic();
+        musicBtn.classList.remove('playing');
+        musicWave.classList.add('paused');
+        musicWave.querySelectorAll('span').forEach(s => s.style.height = '4px');
+      } else {
+        musicPlaying = true;
+        startAmbientMusic();
+        musicBtn.classList.add('playing');
+        musicWave.classList.remove('paused');
+        musicWave.querySelectorAll('span').forEach((s, i) => {
+          s.style.height = (8 + Math.sin(i) * 10) + 'px';
+        });
+        // Also try bgMusic if file exists
+        bgMusic.volume = 0.3;
+        bgMusic.play().catch(() => {});
+      }
+    }
+
+    musicBtn.addEventListener('click', () => {
+      musicPanel.classList.toggle('open');
+      toggleMusic();
+    });
+
+    volumeSlider.addEventListener('input', () => {
+      const vol = volumeSlider.value / 100 * 0.3;
+      if (bgMusic.src) bgMusic.volume = vol;
+    });
+
+    /* ===== SLIDESHOW ===== */
+    const slideshowTrack = document.getElementById('slideshowTrack');
+    const slideshowDots = document.getElementById('slideshowDots');
+    const ssPlay = document.getElementById('ssPlay');
+    const ssPrev = document.getElementById('ssPrev');
+    const ssNext = document.getElementById('ssNext');
+    let ssIndex = 0;
+    let ssPlaying = false;
+    let ssTimer = null;
+    let ssImages = [];
+
+    function renderSlideshow(imgs) {
+      ssImages = imgs;
+      slideshowTrack.innerHTML = imgs.map((src, i) => `
+        <div class="slideshow-slide ${i === 0 ? 'active' : ''}" data-index="${i}">
+          <div class="ken-burns">
+            <img src="${src}" alt="Slide ${i + 1}" loading="${i < 3 ? 'eager' : 'lazy'}">
+          </div>
+          <div class="slideshow-overlay"></div>
+          <div class="slideshow-caption">Hà Nội ${i + 1}</div>
+        </div>
+      `).join('');
+
+      slideshowDots.innerHTML = imgs.map((_, i) => `
+        <button class="slideshow-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></button>
+      `).join('');
+    }
+
+    function setSlide(index) {
+      const slides = slideshowTrack.querySelectorAll('.slideshow-slide');
+      const dots = slideshowDots.querySelectorAll('.slideshow-dot');
+      ssIndex = ((index % ssImages.length) + ssImages.length) % ssImages.length;
+      slides.forEach((s, i) => s.classList.toggle('active', i === ssIndex));
+      dots.forEach((d, i) => d.classList.toggle('active', i === ssIndex));
+    }
+
+    function startSlideshow() {
+      ssPlaying = true;
+      ssPlay.textContent = '⏸';
+      ssTimer = setInterval(() => setSlide(ssIndex + 1), 4000);
+    }
+
+    function stopSlideshow() {
+      ssPlaying = false;
+      ssPlay.textContent = '▶';
+      clearInterval(ssTimer);
+    }
+
+    ssPlay.addEventListener('click', () => {
+      if (ssPlaying) stopSlideshow();
+      else startSlideshow();
+    });
+
+    ssPrev.addEventListener('click', () => { stopSlideshow(); setSlide(ssIndex - 1); });
+    ssNext.addEventListener('click', () => { stopSlideshow(); setSlide(ssIndex + 1); });
+
+    slideshowDots.addEventListener('click', (e) => {
+      if (e.target.classList.contains('slideshow-dot')) {
+        stopSlideshow();
+        setSlide(parseInt(e.target.dataset.index));
+      }
+    });
+
     /* ===== RENDER DATASET GRID ===== */
-    function renderDataset() {
+    function renderDataset(view = 'grid') {
       const grid = document.getElementById('datasetGrid');
+      grid.className = 'photo-grid ' + view;
       grid.innerHTML = datasetImages.map((src, i) => `
-        <div class="photo-item" data-index="${i}">
+        <div class="photo-item" data-index="${i}" style="animation-delay: ${(i % 12) * 0.05}s">
           <img src="${src}" alt="Hà Nội ${i + 1}" loading="lazy">
+          <div class="photo-item-overlay"><span>Góc Hà Nội #${i + 1}</span></div>
         </div>
       `).join('');
     }
+
+    // View toggle
+    document.querySelectorAll('.view-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderDataset(btn.dataset.view);
+      });
+    });
 
     /* ===== RENDER PERSONAL ALBUM ===== */
     async function renderPersonal() {
       const grid = document.getElementById('personalGrid');
       const empty = document.getElementById('emptyState');
+      const actions = document.getElementById('personalActions');
+      const count = document.getElementById('personalCount');
       try {
         const images = await getAllImages();
+        count.textContent = `${images.length} khoảnh khắc đã lưu`;
         if (images.length === 0) {
           grid.innerHTML = '';
           empty.style.display = 'block';
+          actions.style.display = 'none';
         } else {
           empty.style.display = 'none';
-          grid.innerHTML = images.map(img => `
-            <div class="personal-item" data-id="${img.id}">
-              <img src="${img.dataUrl}" alt="Ảnh riêng">
-              <button class="personal-delete" title="Xóa ảnh">×</button>
+          actions.style.display = 'flex';
+          grid.innerHTML = images.map((img, i) => `
+            <div class="personal-item" data-id="${img.id}" style="animation-delay: ${i * 0.05}s">
+              <img src="${img.dataUrl}" alt="Ảnh ${i + 1}" loading="lazy">
+              <div class="personal-item-actions">
+                <button class="personal-action-btn view-btn" title="Xem lớn">🔍</button>
+                <button class="personal-action-btn delete-btn" title="Xóa">×</button>
+              </div>
             </div>
           `).join('');
         }
@@ -726,17 +1765,21 @@
     /* ===== LIGHTBOX ===== */
     let currentIndex = 0;
     let allImages = [];
+    let lightboxSource = 'dataset';
 
-    function openLightbox(index, images) {
+    function openLightbox(index, images, source) {
       allImages = images;
       currentIndex = index;
+      lightboxSource = source;
       showLightboxImg();
       document.getElementById('lightbox').classList.add('active');
       document.body.style.overflow = 'hidden';
     }
 
     function showLightboxImg() {
-      document.getElementById('lightboxImg').src = allImages[currentIndex].src || allImages[currentIndex];
+      const el = document.getElementById('lightboxImg');
+      const src = allImages[currentIndex].src || allImages[currentIndex];
+      el.src = src;
     }
 
     function closeLightbox() {
@@ -744,73 +1787,119 @@
       document.body.style.overflow = '';
     }
 
-    function lightboxPrev() {
-      currentIndex = (currentIndex - 1 + allImages.length) % allImages.length;
+    function lightboxNav(dir) {
+      currentIndex = ((currentIndex + dir + allImages.length) % allImages.length);
       showLightboxImg();
     }
 
-    function lightboxNext() {
-      currentIndex = (currentIndex + 1) % allImages.length;
-      showLightboxImg();
-    }
-
-    // Lightbox events
     document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
-    document.getElementById('lightboxPrev').addEventListener('click', lightboxPrev);
-    document.getElementById('lightboxNext').addEventListener('click', lightboxNext);
+    document.getElementById('lightboxPrev').addEventListener('click', () => lightboxNav(-1));
+    document.getElementById('lightboxNext').addEventListener('click', () => lightboxNav(1));
     document.getElementById('lightbox').addEventListener('click', (e) => {
       if (e.target.id === 'lightbox') closeLightbox();
     });
     document.addEventListener('keydown', (e) => {
       if (!document.getElementById('lightbox').classList.contains('active')) return;
       if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowLeft') lightboxPrev();
-      if (e.key === 'ArrowRight') lightboxNext();
+      if (e.key === 'ArrowLeft') lightboxNav(-1);
+      if (e.key === 'ArrowRight') lightboxNav(1);
     });
 
-    // Dataset grid click → lightbox
+    // Dataset grid click
     document.getElementById('datasetGrid').addEventListener('click', (e) => {
       const item = e.target.closest('.photo-item');
       if (!item) return;
       const index = parseInt(item.dataset.index);
-      const images = datasetImages.map(src => ({ src }));
-      openLightbox(index, images);
+      openLightbox(index, datasetImages.map(src => ({ src })), 'dataset');
     });
 
-    // Personal album click → lightbox
+    // Personal album click
     document.getElementById('personalGrid').addEventListener('click', async (e) => {
-      // Delete button
-      if (e.target.classList.contains('personal-delete')) {
-        e.stopPropagation();
-        const item = e.target.closest('.personal-item');
-        const id = item.dataset.id;
-        await deleteImage(id);
-        await renderPersonal();
-        return;
-      }
-      // View image
       const item = e.target.closest('.personal-item');
       if (!item) return;
+
+      if (e.target.classList.contains('delete-btn')) {
+        e.stopPropagation();
+        if (confirm('Xóa ảnh này?')) {
+          await deleteImage(item.dataset.id);
+          await renderPersonal();
+        }
+        return;
+      }
+
+      if (e.target.classList.contains('view-btn')) {
+        e.stopPropagation();
+        const id = item.dataset.id;
+        const images = await getAllImages();
+        const index = images.findIndex(img => img.id === id);
+        openLightbox(index, images.map(img => ({ src: img.dataUrl })), 'personal');
+        return;
+      }
+
       const id = item.dataset.id;
       const images = await getAllImages();
       const index = images.findIndex(img => img.id === id);
-      openLightbox(index, images.map(img => ({ src: img.dataUrl })));
+      openLightbox(index, images.map(img => ({ src: img.dataUrl })), 'personal');
     });
 
-    /* ===== UPLOAD ZONE ===== */
+    /* ===== PERSONAL SLIDESHOW ===== */
+    let psImages = [];
+    let psIndex = 0;
+    let psTimer = null;
+
+    const personalSlideshow = document.getElementById('personalSlideshow');
+    const psSlide = document.getElementById('psSlide');
+    const psCounter = document.getElementById('psCounter');
+    const psClose = document.getElementById('psClose');
+    const psPrev = document.getElementById('psPrev');
+    const psNext = document.getElementById('psNext');
+
+    async function openPersonalSlideshow() {
+      const images = await getAllImages();
+      if (images.length === 0) return;
+      psImages = images;
+      psIndex = 0;
+      showPsSlide();
+      personalSlideshow.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      // Auto advance
+      psTimer = setInterval(() => showPsSlide(psIndex + 1), 4000);
+    }
+
+    function showPsSlide(idx) {
+      psIndex = ((idx % psImages.length) + psImages.length) % psImages.length;
+      psSlide.classList.remove('active');
+      setTimeout(() => {
+        psSlide.src = psImages[psIndex].dataUrl;
+        psSlide.classList.add('active');
+      }, 150);
+      psCounter.textContent = `${psIndex + 1} / ${psImages.length}`;
+    }
+
+    psClose.addEventListener('click', () => {
+      personalSlideshow.classList.remove('active');
+      document.body.style.overflow = '';
+      clearInterval(psTimer);
+    });
+
+    psPrev.addEventListener('click', () => { clearInterval(psTimer); showPsSlide(psIndex - 1); psTimer = setInterval(() => showPsSlide(psIndex + 1), 4000); });
+    psNext.addEventListener('click', () => { clearInterval(psTimer); showPsSlide(psIndex + 1); psTimer = setInterval(() => showPsSlide(psIndex + 1), 4000); });
+
+    /* ===== UPLOAD ===== */
     let pendingFiles = [];
 
     const uploadZone = document.getElementById('uploadZone');
     const fileInput = document.getElementById('fileInput');
     const previewArea = document.getElementById('previewArea');
     const previewGrid = document.getElementById('previewGrid');
+    const previewCount = document.getElementById('previewCount');
+    const uploadProgress = document.getElementById('uploadProgress');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
     const btnSave = document.getElementById('btnSave');
+    const btnCancel = document.getElementById('btnCancel');
 
-    // Drag over
-    uploadZone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      uploadZone.classList.add('drag-over');
-    });
+    uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
     uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
     uploadZone.addEventListener('drop', (e) => {
       e.preventDefault();
@@ -818,7 +1907,6 @@
       handleFiles(e.dataTransfer.files);
     });
 
-    // Click to browse
     fileInput.addEventListener('change', () => handleFiles(fileInput.files));
 
     function handleFiles(files) {
@@ -829,27 +1917,33 @@
 
     function renderPreviews() {
       previewArea.classList.add('active');
+      previewCount.textContent = pendingFiles.length;
       previewGrid.innerHTML = '';
+      let completed = 0;
       pendingFiles.forEach((file, i) => {
         const reader = new FileReader();
         reader.onload = (e) => {
           const div = document.createElement('div');
           div.className = 'preview-item';
+          div.style.animationDelay = (i * 0.05) + 's';
           div.innerHTML = `
             <img src="${e.target.result}" alt="Preview ${i}">
             <button class="preview-remove" data-idx="${i}">×</button>
           `;
           previewGrid.appendChild(div);
+          completed++;
+          progressText.textContent = `Đọc ${completed}/${pendingFiles.length} ảnh...`;
         };
         reader.readAsDataURL(file);
       });
+      progressText.textContent = `Sẵn sàng lưu ${pendingFiles.length} ảnh`;
     }
 
-    // Remove preview
     previewGrid.addEventListener('click', (e) => {
       if (!e.target.classList.contains('preview-remove')) return;
       const idx = parseInt(e.target.dataset.idx);
       pendingFiles.splice(idx, 1);
+      previewCount.textContent = pendingFiles.length;
       if (pendingFiles.length === 0) {
         previewArea.classList.remove('active');
       } else {
@@ -857,29 +1951,51 @@
       }
     });
 
-    // Save to IndexedDB
+    btnCancel.addEventListener('click', () => {
+      pendingFiles = [];
+      previewArea.classList.remove('active');
+      fileInput.value = '';
+    });
+
     btnSave.addEventListener('click', async () => {
       if (pendingFiles.length === 0) return;
-      btnSave.textContent = '⏳ Đang lưu...';
+      uploadProgress.classList.add('active');
       btnSave.disabled = true;
-      const imagesToSave = await Promise.all(pendingFiles.map(file => {
-        return new Promise(resolve => {
+      btnSave.textContent = '⏳ Đang lưu...';
+
+      const imagesToSave = [];
+      for (let i = 0; i < pendingFiles.length; i++) {
+        const file = pendingFiles[i];
+        const dataUrl = await new Promise(resolve => {
           const reader = new FileReader();
-          reader.onload = (e) => {
-            resolve({ id: Date.now() + Math.random(), dataUrl: e.target.result, addedAt: Date.now() });
-          };
+          reader.onload = e => resolve(e.target.result);
           reader.readAsDataURL(file);
         });
-      }));
+        imagesToSave.push({
+          id: Date.now() + Math.random(),
+          dataUrl,
+          addedAt: Date.now(),
+          name: file.name
+        });
+        progressBar.style.width = ((i + 1) / pendingFiles.length * 100) + '%';
+        progressText.textContent = `Đang lưu ${i + 1}/${pendingFiles.length} ảnh...`;
+      }
+
       try {
         await saveImages(imagesToSave);
         pendingFiles = [];
         previewArea.classList.remove('active');
+        uploadProgress.classList.remove('active');
+        progressBar.style.width = '0%';
         fileInput.value = '';
         await renderPersonal();
-        btnSave.textContent = '💾 Lưu Album Riêng';
-        btnSave.disabled = false;
-        // Scroll to personal album
+        btnSave.textContent = '💾 Đã lưu!';
+        btnSave.style.background = '#A8BFA0';
+        setTimeout(() => {
+          btnSave.textContent = '💾 Lưu Album Riêng';
+          btnSave.style.background = '';
+          btnSave.disabled = false;
+        }, 2000);
         document.getElementById('personal').scrollIntoView({ behavior: 'smooth' });
       } catch (e) {
         console.error(e);
@@ -888,23 +2004,29 @@
       }
     });
 
-    /* ===== MUSIC TOGGLE ===== */
-    const musicToggle = document.getElementById('musicToggle');
-    const bgMusic = document.getElementById('bgMusic');
-    let musicPlaying = false;
+    /* ===== PERSONAL ACTIONS ===== */
+    document.getElementById('btnSlideshow').addEventListener('click', openPersonalSlideshow);
 
-    musicToggle.addEventListener('click', () => {
-      if (musicPlaying) {
-        bgMusic.pause();
-        musicToggle.classList.remove('playing');
-        musicToggle.textContent = '♪';
-      } else {
-        bgMusic.volume = 0.3;
-        bgMusic.play().catch(() => {});
-        musicToggle.classList.add('playing');
-        musicToggle.textContent = '🔊';
+    document.getElementById('btnShuffle').addEventListener('click', async () => {
+      const images = await getAllImages();
+      for (let i = images.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [images[i], images[j]] = [images[j], images[i]];
       }
-      musicPlaying = !musicPlaying;
+      // Re-save in new order
+      for (const img of images) {
+        await saveImages([img]);
+      }
+      await renderPersonal();
+    });
+
+    document.getElementById('btnClearAll').addEventListener('click', async () => {
+      const images = await getAllImages();
+      if (images.length === 0) return;
+      if (confirm(`Xóa tất cả ${images.length} ảnh trong album riêng?`)) {
+        await clearAllImages();
+        await renderPersonal();
+      }
     });
 
     /* ===== SCROLL REVEAL ===== */
@@ -916,7 +2038,7 @@
           revealObserver.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.08 });
 
     revealEls.forEach(el => revealObserver.observe(el));
 
@@ -924,7 +2046,9 @@
     (async () => {
       try {
         await initDB();
-        renderDataset();
+        createPetals();
+        renderSlideshow(datasetImages.slice(0, 12));
+        renderDataset('grid');
         await renderPersonal();
       } catch (e) {
         console.error('Init error:', e);
