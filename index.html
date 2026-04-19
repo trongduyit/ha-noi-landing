@@ -1535,10 +1535,8 @@
       a.addEventListener('click', () => navLinks.classList.remove('open'));
     });
 
-    /* ===== MUSIC PLAYER (Web Audio API fallback) ===== */
-    let audioCtx = null;
+    /* ===== MUSIC PLAYER ===== */
     let musicPlaying = false;
-    let activeOscillators = [];
 
     const musicBtn = document.getElementById('musicBtn');
     const musicPanel = document.getElementById('musicPanel');
@@ -1546,94 +1544,104 @@
     const volumeSlider = document.getElementById('volumeSlider');
     const bgMusic = document.getElementById('bgMusic');
 
-    // Piano notes frequencies (A minor pentatonic + ambient)
+    // Web Audio API — piano ambient tự tạo
+    let audioCtx = null;
     const NOTE_FREQS = [220, 261.63, 293.66, 329.63, 392, 440, 523.25, 587.33, 659.25, 784, 880];
 
-    function startAmbientMusic() {
-      if (audioCtx) return;
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      playAmbientLoop();
-    }
-
-    function playAmbientLoop() {
-      if (!audioCtx || !musicPlaying) return;
+    function startAmbientLoop() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (!musicPlaying) return;
       const now = audioCtx.currentTime;
-      const vol = parseFloat(volumeSlider.value) / 100 * 0.06;
+      const vol = parseFloat(volumeSlider.value) / 100 * 0.05;
 
-      // Soft drone pad
+      // Drone pad
       const osc1 = audioCtx.createOscillator();
       const osc2 = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       const filter = audioCtx.createBiquadFilter();
-
       osc1.type = 'sine';
       osc2.type = 'sine';
       osc1.frequency.value = 110;
       osc2.frequency.value = 165;
-
       filter.type = 'lowpass';
-      filter.frequency.value = 400;
-
+      filter.frequency.value = 500;
       gain.gain.setValueAtTime(0, now);
       gain.gain.linearRampToValueAtTime(vol, now + 3);
-      gain.gain.setValueAtTime(vol, now + 12);
-      gain.gain.linearRampToValueAtTime(0, now + 15);
-
+      gain.gain.setValueAtTime(vol, now + 10);
+      gain.gain.linearRampToValueAtTime(0, now + 13);
       osc1.connect(filter);
       osc2.connect(filter);
       filter.connect(gain);
       gain.connect(audioCtx.destination);
-
       osc1.start(now);
       osc2.start(now);
-      osc1.stop(now + 15);
-      osc2.stop(now + 15);
+      osc1.stop(now + 13);
+      osc2.stop(now + 13);
 
-      // Random gentle piano notes
-      setTimeout(() => {
-        if (musicPlaying) {
-          const note = NOTE_FREQS[Math.floor(Math.random() * NOTE_FREQS.length)];
-          const osc = audioCtx.createOscillator();
-          const g = audioCtx.createGain();
-          osc.type = 'triangle';
-          osc.frequency.value = note;
-          g.gain.setValueAtTime(0, audioCtx.currentTime);
-          g.gain.linearRampToValueAtTime(vol * 2, audioCtx.currentTime + 0.5);
-          g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 4);
-          osc.connect(g);
-          g.connect(audioCtx.destination);
-          osc.start();
-          osc.stop(audioCtx.currentTime + 4);
-          playAmbientLoop();
-        }
-      }, 3000 + Math.random() * 5000);
+      // Piano notes ngẫu nhiên
+      setTimeout(() => { if (musicPlaying) playAmbientLoop(); }, 3500 + Math.random() * 4000);
     }
 
-    function stopMusic() {
-      musicPlaying = false;
-      if (audioCtx) {
-        audioCtx.close();
-        audioCtx = null;
+    function playAmbientLoop() {
+      if (!musicPlaying || !audioCtx) return;
+      const vol = parseFloat(volumeSlider.value) / 100 * 0.04;
+      const note = NOTE_FREQS[Math.floor(Math.random() * NOTE_FREQS.length)];
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = note;
+      g.gain.setValueAtTime(0, audioCtx.currentTime);
+      g.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + 0.3);
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 5);
+      osc.connect(g);
+      g.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 5);
+    }
+
+    async function startMp3Music() {
+      // Thử phát file mp3
+      try {
+        bgMusic.currentTime = 0;
+        await bgMusic.play();
+        return true;
+      } catch (e) {
+        // File không hỗ trợ hoặc lỗi → dùng Web Audio API
+        return false;
       }
     }
 
-    function toggleMusic() {
+    async function toggleMusic() {
       if (musicPlaying) {
-        stopMusic();
+        // STOP
+        musicPlaying = false;
+        bgMusic.pause();
+        bgMusic.currentTime = 0;
+        if (audioCtx) { audioCtx.close(); audioCtx = null; }
         musicBtn.classList.remove('playing');
+        musicBtn.textContent = '🎵';
         musicWave.classList.add('paused');
         musicWave.querySelectorAll('span').forEach(s => s.style.height = '4px');
       } else {
+        // PLAY
         musicPlaying = true;
-        startAmbientMusic();
         musicBtn.classList.add('playing');
+        musicBtn.textContent = '🔊';
         musicWave.classList.remove('paused');
+
+        // Ưu tiên 1: thử phát MP3
+        const mp3Ok = await startMp3Music();
+
+        // Ưu tiên 2: Web Audio API ambient
+        if (!mp3Ok) {
+          if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          startAmbientLoop();
+        }
+
+        // Wave animation
         musicWave.querySelectorAll('span').forEach((s, i) => {
-          s.style.height = (8 + Math.sin(i) * 10) + 'px';
+          s.style.height = (8 + Math.sin(i * 1.2) * 10) + 'px';
         });
-        // Also try bgMusic if file exists
-        bgMusic.volume = 0.3;
-        bgMusic.play().catch(() => {});
       }
     }
 
@@ -1643,8 +1651,7 @@
     });
 
     volumeSlider.addEventListener('input', () => {
-      const vol = volumeSlider.value / 100 * 0.3;
-      if (bgMusic.src) bgMusic.volume = vol;
+      bgMusic.volume = volumeSlider.value / 100;
     });
 
     /* ===== SLIDESHOW ===== */
