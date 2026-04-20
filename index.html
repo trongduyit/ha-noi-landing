@@ -1242,6 +1242,298 @@
 
     /* ===== AUDIO (hidden) ===== */
     #bgMusic { display: none; }
+
+    /* ===== PHOTO MANAGER MODAL ===== */
+    .pm-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 600;
+      background: rgba(250,247,244,0.97);
+      backdrop-filter: blur(20px);
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .pm-modal.active { display: flex; }
+
+    .pm-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 24px;
+      background: white;
+      border-bottom: 1px solid rgba(201,134,154,0.2);
+      box-shadow: 0 2px 12px rgba(61,48,41,0.06);
+    }
+
+    .pm-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--brown-dark);
+      white-space: nowrap;
+    }
+
+    .pm-tabs {
+      display: flex;
+      gap: 4px;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .pm-tab {
+      padding: 8px 20px;
+      border-radius: 50px;
+      border: 1.5px solid rgba(201,134,154,0.3);
+      background: transparent;
+      color: var(--brown-light);
+      font-size: 0.9rem;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .pm-tab.active {
+      background: var(--pink-accent);
+      color: white;
+      border-color: var(--pink-accent);
+    }
+
+    .pm-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(61,48,41,0.06);
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      color: var(--brown-dark);
+    }
+    .pm-close:hover { background: rgba(61,48,41,0.12); }
+
+    .pm-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .pm-hint {
+      text-align: center;
+      color: var(--brown-light);
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+    }
+
+    .pm-select-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--pink-light);
+      border-radius: 12px;
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+      color: var(--pink-dark);
+      animation: fadeInUp 0.3s ease;
+    }
+
+    .pm-action-btn {
+      padding: 6px 16px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 600;
+      transition: all 0.2s;
+      background: var(--pink-accent);
+      color: white;
+    }
+    .pm-action-btn:hover { background: var(--pink-dark); }
+    #pmClearSelection { background: rgba(61,48,41,0.1); color: var(--brown-dark); }
+    #pmClearSelection:hover { background: rgba(61,48,41,0.18); }
+
+    .pm-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 12px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .pm-item {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      animation: itemIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    }
+    .pm-item:hover { transform: scale(1.04); box-shadow: 0 8px 24px rgba(61,48,41,0.15); }
+    .pm-item.selected {
+      border-color: var(--pink-accent);
+      box-shadow: 0 0 0 3px rgba(201,134,154,0.3);
+    }
+    .pm-item img { width: 100%; height: 100%; object-fit: cover; }
+
+    .pm-item-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      opacity: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      transition: opacity 0.2s;
+    }
+    .pm-item:hover .pm-item-overlay,
+    .pm-item.selected .pm-item-overlay { opacity: 1; }
+
+    .pm-item-badge {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--pink-accent);
+      color: white;
+      font-size: 0.75rem;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .pm-item.selected .pm-item-badge { display: flex; }
+
+    .pm-empty {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--brown-light);
+    }
+    .pm-empty-icon { font-size: 3rem; display: block; margin-bottom: 16px; }
+
+    /* Upload tab */
+    .pm-upload-zone {
+      border: 2px dashed var(--pink-accent);
+      border-radius: 20px;
+      padding: 48px 32px;
+      text-align: center;
+      background: rgba(255,255,255,0.6);
+      cursor: pointer;
+      transition: all 0.4s;
+      position: relative;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .pm-upload-zone:hover, .pm-upload-zone.drag-over {
+      border-style: solid;
+      background: rgba(201,134,154,0.08);
+      transform: scale(1.01);
+    }
+    .pm-upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .pm-upload-icon { font-size: 3rem; display: block; margin-bottom: 12px; }
+    .pm-upload-text { font-size: 1rem; color: var(--brown-light); }
+    .pm-upload-text strong { color: var(--pink-accent); }
+
+    .pm-preview-area { display: none; margin-top: 24px; }
+    .pm-preview-area.active { display: block; }
+    .pm-preview-title { text-align: center; margin-bottom: 12px; color: var(--brown-light); font-size: 0.95rem; }
+    .pm-preview-grid {
+      display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 16px;
+    }
+    .pm-preview-item {
+      position: relative;
+      width: 110px;
+      height: 110px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid white;
+      animation: previewIn 0.3s ease;
+    }
+    .pm-preview-item img { width: 100%; height: 100%; object-fit: cover; }
+    .pm-preview-remove {
+      position: absolute; top: 3px; right: 3px;
+      width: 24px; height: 24px; border-radius: 50%;
+      background: rgba(176,107,127,0.9);
+      color: white; border: none; cursor: pointer;
+      font-size: 0.8rem; display: flex; align-items: center; justify-content: center;
+    }
+    .pm-btn-group { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+    .pm-btn-save {
+      padding: 12px 28px; border-radius: 50px; border: none;
+      background: var(--pink-accent); color: white;
+      font-size: 1rem; font-family: 'Nunito', sans-serif; font-weight: 600;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .pm-btn-save:hover { background: var(--pink-dark); transform: translateY(-2px); }
+    .pm-btn-cancel {
+      padding: 12px 24px; border-radius: 50px;
+      background: white; color: var(--brown-light);
+      border: 1.5px solid var(--pink-light);
+      font-size: 1rem; font-family: 'Nunito', sans-serif;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .pm-btn-cancel:hover { background: var(--pink-light); }
+
+    /* Image preview in manager */
+    .pm-img-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 700;
+      background: rgba(0,0,0,0.92);
+      align-items: center;
+      justify-content: center;
+    }
+    .pm-img-modal.active { display: flex; }
+    .pm-img-view {
+      max-width: 85vw;
+      max-height: 80vh;
+      border-radius: 16px;
+      object-fit: contain;
+      animation: lightboxIn 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .pm-img-close {
+      position: fixed; top: 20px; right: 24px;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,0.1); color: white;
+      border: none; cursor: pointer; font-size: 1.5rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .pm-img-close:hover { background: rgba(255,255,255,0.2); }
+    .pm-img-del {
+      position: fixed; top: 20px; right: 80px;
+      padding: 8px 16px; border-radius: 50px;
+      background: rgba(220,38,38,0.8); color: white;
+      border: none; cursor: pointer; font-size: 0.9rem;
+      font-family: 'Nunito', sans-serif;
+      transition: background 0.2s;
+    }
+    .pm-img-del:hover { background: rgba(220,38,38,1); }
+    .pm-img-nav {
+      position: fixed; top: 50%; transform: translateY(-50%);
+      width: 52px; height: 52px; border-radius: 50%;
+      background: rgba(255,255,255,0.1); color: white;
+      border: none; cursor: pointer; font-size: 1.5rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .pm-img-nav:hover { background: rgba(255,255,255,0.2); }
+    .pm-img-prev { left: 16px; }
+    .pm-img-next { right: 16px; }
+
+    @media (max-width: 768px) {
+      .pm-header { flex-wrap: wrap; }
+      .pm-title { font-size: 1.1rem; }
+      .pm-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .pm-img-del { top: auto; bottom: 60px; right: 24px; }
+    }
   </style>
 </head>
 <body>
@@ -1374,6 +1666,8 @@
     </div>
     <div class="personal-actions reveal" id="personalActions" style="display:none">
       <button class="action-btn" id="btnSlideshow">🎬 Chiếu Album</button>
+      <button class="action-btn" id="btnEdit">✏️ Chỉnh Sửa</button>
+      <button class="action-btn" id="btnManager">🖼️ Quản Lý Ảnh</button>
       <button class="action-btn" id="btnShuffle">🔀 Xáo Trộn</button>
       <button class="action-btn danger" id="btnClearAll">🗑️ Xóa Tất Cả</button>
     </div>
@@ -1398,6 +1692,62 @@
     <button class="lightbox-nav lightbox-prev" id="lightboxPrev">‹</button>
     <button class="lightbox-nav lightbox-next" id="lightboxNext">›</button>
     <img class="lightbox-img" id="lightboxImg" src="" alt="">
+  </div>
+
+  <!-- PHOTO MANAGER MODAL -->
+  <div class="pm-modal" id="pmModal">
+    <div class="pm-header">
+      <h2 class="pm-title">🖼️ Quản Lý Album</h2>
+      <div class="pm-tabs">
+        <button class="pm-tab active" data-tab="edit">✏️ Sửa Ảnh</button>
+        <button class="pm-tab" data-tab="upload">📷 Thêm Ảnh</button>
+      </div>
+      <button class="pm-close" id="pmClose">×</button>
+    </div>
+
+    <!-- EDIT TAB -->
+    <div class="pm-content" id="pmContentEdit">
+      <p class="pm-hint">Click ảnh để chọn → sau đó xóa hoặc xem lớn. Giữ Ctrl để chọn nhiều.</p>
+      <div class="pm-select-bar" id="pmSelectBar" style="display:none">
+        <span id="pmSelectCount">0 ảnh đã chọn</span>
+        <button class="pm-action-btn" id="pmDeleteSelected">🗑️ Xóa đã chọn</button>
+        <button class="pm-action-btn" id="pmClearSelection">✕ Bỏ chọn</button>
+      </div>
+      <div class="pm-grid" id="pmGrid"></div>
+      <div class="pm-empty" id="pmEmpty">
+        <span class="pm-empty-icon">📭</span>
+        <p>Album trống — hãy thêm ảnh!</p>
+      </div>
+    </div>
+
+    <!-- UPLOAD TAB -->
+    <div class="pm-content" id="pmContentUpload" style="display:none">
+      <div class="pm-upload-zone" id="pmUploadZone">
+        <span class="pm-upload-icon">📷</span>
+        <p class="pm-upload-text">
+          Kéo thả ảnh hoặc <strong>click để chọn</strong><br>
+          <small>JPG, PNG, WebP, GIF</small>
+        </p>
+        <input type="file" id="pmFileInput" accept="image/*" multiple>
+      </div>
+      <div class="pm-preview-area" id="pmPreviewArea">
+        <p class="pm-preview-title">Đã chọn <strong id="pmPreviewCount">0</strong> ảnh</p>
+        <div class="pm-preview-grid" id="pmPreviewGrid"></div>
+        <div class="pm-btn-group">
+          <button class="pm-btn-save" id="pmBtnSave">💾 Lưu Vào Album</button>
+          <button class="pm-btn-cancel" id="pmBtnCancel">✕ Hủy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Image Preview Modal -->
+    <div class="pm-img-modal" id="pmImgModal">
+      <button class="pm-img-close" id="pmImgClose">×</button>
+      <button class="pm-img-del" id="pmImgDel" title="Xóa ảnh này">🗑️</button>
+      <img class="pm-img-view" id="pmImgView" src="" alt="">
+      <button class="pm-img-nav pm-img-prev" id="pmImgPrev">‹</button>
+      <button class="pm-img-nav pm-img-next" id="pmImgNext">›</button>
+    </div>
   </div>
 
   <!-- PERSONAL SLIDESHOW -->
@@ -1747,6 +2097,248 @@
         </div>
       `).join('');
     }
+
+    /* ===== PHOTO MANAGER ===== */
+    const pmModal = document.getElementById('pmModal');
+    const pmGrid = document.getElementById('pmGrid');
+    const pmEmpty = document.getElementById('pmEmpty');
+    const pmSelectBar = document.getElementById('pmSelectBar');
+    const pmSelectCount = document.getElementById('pmSelectCount');
+    const pmContentEdit = document.getElementById('pmContentEdit');
+    const pmContentUpload = document.getElementById('pmContentUpload');
+    const pmUploadZone = document.getElementById('pmUploadZone');
+    const pmFileInput = document.getElementById('pmFileInput');
+    const pmPreviewArea = document.getElementById('pmPreviewArea');
+    const pmPreviewGrid = document.getElementById('pmPreviewGrid');
+    const pmPreviewCount = document.getElementById('pmPreviewCount');
+    const pmBtnSave = document.getElementById('pmBtnSave');
+    const pmBtnCancel = document.getElementById('pmBtnCancel');
+    const pmImgModal = document.getElementById('pmImgModal');
+    const pmImgView = document.getElementById('pmImgView');
+    const pmImgDel = document.getElementById('pmImgDel');
+
+    let pmImages = [];      // all images from IndexedDB
+    let pmSelected = new Set(); // selected IDs
+    let pmPendingFiles = [];    // files waiting to be saved
+    let pmViewIndex = 0;        // current view in preview modal
+
+    function openPhotoManager() {
+      pmModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      switchTab('edit');
+      loadPmGrid();
+    }
+
+    function closePhotoManager() {
+      pmModal.classList.remove('active');
+      document.body.style.overflow = '';
+      pmSelected.clear();
+      pmPendingFiles = [];
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.pm-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+      pmContentEdit.style.display = tab === 'edit' ? '' : 'none';
+      pmContentUpload.style.display = tab === 'upload' ? '' : 'none';
+      if (tab === 'upload') {
+        pmPendingFiles = [];
+        pmPreviewArea.classList.remove('active');
+        pmFileInput.value = '';
+      }
+    }
+
+    async function loadPmGrid() {
+      pmImages = await getAllImages();
+      pmSelected.clear();
+      updatePmSelectBar();
+      renderPmGrid();
+    }
+
+    function renderPmGrid() {
+      if (pmImages.length === 0) {
+        pmGrid.innerHTML = '';
+        pmEmpty.style.display = 'block';
+        return;
+      }
+      pmEmpty.style.display = 'none';
+      pmGrid.innerHTML = '';
+      pmImages.forEach((img, i) => {
+        const item = document.createElement('div');
+        item.className = 'pm-item' + (pmSelected.has(img.id) ? ' selected' : '');
+        item.dataset.id = img.id;
+        item.dataset.index = i;
+        item.style.animationDelay = (i * 0.04) + 's';
+        item.innerHTML = `
+          <img src="${img.dataUrl}" alt="Ảnh ${i + 1}" loading="lazy">
+          <div class="pm-item-overlay">${pmSelected.has(img.id) ? '✓' : 'Chọn'}</div>
+          <div class="pm-item-badge">${pmSelected.has(img.id) ? '✓' : ''}</div>`;
+        pmGrid.appendChild(item);
+      });
+    }
+
+    function updatePmSelectBar() {
+      const n = pmSelected.size;
+      pmSelectBar.style.display = n > 0 ? 'flex' : 'none';
+      pmSelectCount.textContent = `${n} ảnh đã chọn`;
+    }
+
+    // Grid click: select or preview
+    pmGrid.addEventListener('click', async (e) => {
+      const item = e.target.closest('.pm-item');
+      if (!item) return;
+
+      const id = item.dataset.id;
+      const index = parseInt(item.dataset.index);
+
+      if (e.ctrlKey || e.metaKey || e.shiftKey) {
+        // Toggle select
+        if (pmSelected.has(id)) pmSelected.delete(id);
+        else pmSelected.add(id);
+        updatePmSelectBar();
+        renderPmGrid();
+      } else {
+        // Open preview
+        pmViewIndex = index;
+        openPmImg(index);
+      }
+    });
+
+    function openPmImg(index) {
+      pmViewIndex = index;
+      const img = pmImages[index];
+      pmImgView.src = img.dataUrl;
+      pmImgModal.classList.add('active');
+    }
+
+    function closePmImg() {
+      pmImgModal.classList.remove('active');
+    }
+
+    function pmImgNav(dir) {
+      pmViewIndex = ((pmViewIndex + dir + pmImages.length) % pmImages.length);
+      pmImgView.src = pmImages[pmViewIndex].dataUrl;
+    }
+
+    // Delete current viewed image
+    pmImgDel.addEventListener('click', async () => {
+      const id = pmImages[pmViewIndex].id;
+      await deleteImage(id);
+      await loadPmGrid();
+      closePmImg();
+    });
+
+    // Delete selected images
+    document.getElementById('pmDeleteSelected').addEventListener('click', async () => {
+      if (pmSelected.size === 0) return;
+      const confirmed = confirm(`Xóa ${pmSelected.size} ảnh đã chọn?`);
+      if (!confirmed) return;
+      for (const id of pmSelected) {
+        await deleteImage(id);
+      }
+      pmSelected.clear();
+      await loadPmGrid();
+    });
+
+    document.getElementById('pmClearSelection').addEventListener('click', () => {
+      pmSelected.clear();
+      updatePmSelectBar();
+      renderPmGrid();
+    });
+
+    // PM tab switching
+    document.querySelectorAll('.pm-tab').forEach(t => {
+      t.addEventListener('click', () => switchTab(t.dataset.tab));
+    });
+
+    // Close PM modal
+    document.getElementById('pmClose').addEventListener('click', closePhotoManager);
+    pmImgModal.addEventListener('click', (e) => {
+      if (e.target === pmImgModal) closePmImg();
+    });
+
+    // PM image nav
+    document.getElementById('pmImgPrev').addEventListener('click', () => pmImgNav(-1));
+    document.getElementById('pmImgNext').addEventListener('click', () => pmImgNav(1));
+    document.getElementById('pmImgClose').addEventListener('click', closePmImg);
+
+    // PM upload zone
+    pmUploadZone.addEventListener('dragover', (e) => { e.preventDefault(); pmUploadZone.classList.add('drag-over'); });
+    pmUploadZone.addEventListener('dragleave', () => pmUploadZone.classList.remove('drag-over'));
+    pmUploadZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      pmUploadZone.classList.remove('drag-over');
+      handlePmFiles(e.dataTransfer.files);
+    });
+    pmFileInput.addEventListener('change', () => handlePmFiles(pmFileInput.files));
+
+    function handlePmFiles(files) {
+      pmPendingFiles = Array.from(files).filter(f => f.type.startsWith('image/'));
+      if (!pmPendingFiles.length) return;
+      pmPreviewArea.classList.add('active');
+      pmPreviewCount.textContent = pmPendingFiles.length;
+      pmPreviewGrid.innerHTML = '';
+      pmPendingFiles.forEach((file, i) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const div = document.createElement('div');
+          div.className = 'pm-preview-item';
+          div.innerHTML = `<img src="${e.target.result}" alt="">
+            <button class="pm-preview-remove" data-idx="${i}">×</button>`;
+          pmPreviewGrid.appendChild(div);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    pmPreviewGrid.addEventListener('click', (e) => {
+      if (!e.target.classList.contains('pm-preview-remove')) return;
+      const idx = parseInt(e.target.dataset.idx);
+      pmPendingFiles.splice(idx, 1);
+      pmPreviewCount.textContent = pmPendingFiles.length;
+      if (!pmPendingFiles.length) pmPreviewArea.classList.remove('active');
+      else handlePmFiles(Object.assign([], pmPendingFiles));
+    });
+
+    pmBtnCancel.addEventListener('click', () => {
+      pmPendingFiles = [];
+      pmPreviewArea.classList.remove('active');
+      pmFileInput.value = '';
+    });
+
+    pmBtnSave.addEventListener('click', async () => {
+      if (!pmPendingFiles.length) return;
+      pmBtnSave.textContent = '⏳ Đang lưu...';
+      pmBtnSave.disabled = true;
+      const toSave = [];
+      for (const file of pmPendingFiles) {
+        const dataUrl = await new Promise(r => {
+          const reader = new FileReader();
+          reader.onload = e => r(e.target.result);
+          reader.readAsDataURL(file);
+        });
+        toSave.push({ id: Date.now() + Math.random(), dataUrl, addedAt: Date.now(), name: file.name });
+      }
+      await saveImages(toSave);
+      pmPendingFiles = [];
+      pmPreviewArea.classList.remove('active');
+      pmFileInput.value = '';
+      pmBtnSave.textContent = '💾 Đã lưu!';
+      setTimeout(() => { pmBtnSave.textContent = '💾 Lưu Vào Album'; pmBtnSave.disabled = false; }, 2000);
+      await loadPmGrid();
+      await renderPersonal();
+    });
+
+    // PM keyboard
+    document.addEventListener('keydown', (e) => {
+      if (!pmImgModal.classList.contains('active')) return;
+      if (e.key === 'Escape') closePmImg();
+      if (e.key === 'ArrowLeft') pmImgNav(-1);
+      if (e.key === 'ArrowRight') pmImgNav(1);
+    });
+
+    // Open manager button
+    document.getElementById('btnManager').addEventListener('click', openPhotoManager);
+    document.getElementById('btnEdit').addEventListener('click', openPhotoManager);
 
     // View toggle
     document.querySelectorAll('.view-btn').forEach(btn => {
