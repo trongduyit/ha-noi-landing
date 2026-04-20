@@ -107,6 +107,233 @@
       color: var(--pink-accent);
     }
 
+    /* Brand group */
+    .nav-brand {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .nav-brand-sub {
+      font-size: 0.65rem;
+      color: var(--pink-accent);
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      opacity: 0.8;
+    }
+
+    /* Dropdown */
+    .nav-dropdown { position: relative; }
+
+    .nav-dropdown-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 50px;
+      color: var(--brown-light);
+      text-decoration: none;
+      font-size: 0.92rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .nav-dropdown-toggle:hover,
+    .nav-dropdown.open .nav-dropdown-toggle {
+      background: var(--pink-light);
+      color: var(--pink-accent);
+    }
+
+    .nav-arrow { font-size: 0.7rem; transition: transform 0.3s; }
+    .nav-dropdown.open .nav-arrow { transform: rotate(180deg); }
+
+    .nav-dropdown-panel {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 280px;
+      background: white;
+      border-radius: 20px;
+      border: 1px solid rgba(201,134,154,0.2);
+      box-shadow: 0 16px 48px rgba(61,48,41,0.15);
+      padding: 16px;
+      z-index: 300;
+      animation: panelSlideIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .nav-dropdown.open .nav-dropdown-panel { display: block; }
+
+    @keyframes panelSlideIn {
+      from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Panel header */
+    .nav-panel-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      background: linear-gradient(135deg, var(--pink-light), var(--blue-lav));
+      border-radius: 14px;
+      margin-bottom: 12px;
+    }
+
+    .nav-panel-icon { font-size: 1.8rem; }
+
+    .nav-panel-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--brown-dark);
+      font-weight: 600;
+    }
+
+    .nav-panel-sub {
+      font-size: 0.75rem;
+      color: var(--brown-light);
+    }
+
+    /* Panel actions */
+    .nav-panel-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: none;
+      background: transparent;
+      color: var(--brown-dark);
+      font-size: 0.88rem;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+    }
+
+    .nav-panel-btn:hover {
+      background: var(--pink-light);
+      color: var(--pink-accent);
+    }
+
+    .nav-panel-btn span { font-size: 1.1rem; }
+
+    .nav-panel-divider {
+      height: 1px;
+      background: rgba(201,134,154,0.15);
+      margin: 8px 0;
+    }
+
+    /* Color swatches */
+    .nav-color-picker { display: flex; gap: 8px; margin-top: 8px; }
+
+    .color-swatch {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .color-swatch:hover { transform: scale(1.15); }
+    .color-swatch.active { border-color: var(--brown-dark); transform: scale(1.1); }
+
+    /* View swatches */
+    .nav-view-picker { display: flex; gap: 8px; margin-top: 8px; }
+
+    .view-swatch {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 2px solid var(--pink-light);
+      background: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .view-swatch:hover { border-color: var(--pink-accent); }
+    .view-swatch.active { background: var(--pink-accent); color: white; border-color: var(--pink-accent); }
+
+    /* Settings sections */
+    .nav-panel-section {
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(201,134,154,0.1);
+    }
+
+    .nav-panel-label {
+      font-size: 0.8rem;
+      color: var(--brown-light);
+      margin-bottom: 8px;
+    }
+
+    .nav-slider-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      color: var(--brown-light);
+    }
+
+    .nav-range {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 4px;
+      border-radius: 4px;
+      background: var(--pink-light);
+      outline: none;
+    }
+
+    .nav-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--pink-accent);
+      cursor: pointer;
+    }
+
+    .nav-slider-val {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--pink-accent);
+      margin-top: 4px;
+    }
+
+    /* Toggle rows */
+    .nav-toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 0;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--brown-dark);
+    }
+
+    .nav-toggle-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--pink-accent);
+    }
+
+    @media (max-width: 768px) {
+      .nav-brand-sub { display: none; }
+      .nav-dropdown-panel {
+        position: fixed;
+        top: 60px;
+        right: 8px;
+        left: 8px;
+        min-width: auto;
+      }
+    }
+
     .nav-links .nav-cta {
       background: var(--pink-accent);
       color: white;
@@ -200,8 +427,10 @@
     .hero-title {
       font-size: clamp(3rem, 7vw, 5.5rem);
       font-weight: 700;
-      color: var(--brown-dark);
-      text-shadow: 0 2px 40px rgba(201,134,154,0.3);
+      color: var(--pink-accent);
+      text-shadow:
+        0 2px 40px rgba(201,134,154,0.35),
+        0 0 80px rgba(201,134,154,0.15);
       letter-spacing: 0.02em;
       line-height: 1.1;
       animation: heroTitleIn 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
@@ -435,6 +664,9 @@
     .slideshow-slide {
       position: absolute;
       inset: 0;
+      opacity: 0;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      transform: scale(1.02);
     }
 
     .slideshow-slide img {
@@ -443,8 +675,7 @@
       object-fit: cover;
     }
 
-    /* Fade animation */
-    .slideshow-slide { opacity: 0; transition: opacity 0.6s ease, transform 0.6s ease; transform: scale(1.02); }
+    /* Active / Fade */
     .slideshow-slide.active { opacity: 1; transform: scale(1); }
 
     /* Zoom animation */
@@ -1541,7 +1772,10 @@
   <!-- NAV MENU -->
   <nav class="nav-menu" id="navMenu">
     <div class="nav-inner">
-      <a class="nav-logo" href="#hero">🌸 Hà Nội Dịu Dàng</a>
+      <div class="nav-brand">
+        <a class="nav-logo" href="#hero">🌸 Hà Nội Dịu Dàng</a>
+        <span class="nav-brand-sub">Album Nghệ Thuật</span>
+      </div>
       <button class="nav-toggle" id="navToggle" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
@@ -1550,6 +1784,94 @@
         <li><a href="#dataset"><span>📸</span> Album HN</a></li>
         <li><a href="#upload"><span>📷</span> Upload</a></li>
         <li><a href="#personal"><span>💎</span> Album Riêng</a></li>
+        <!-- Dropdown: Quản Lý -->
+        <li class="nav-dropdown">
+          <a href="#" class="nav-dropdown-toggle" id="navManageToggle">
+            <span>🖼️</span> Quản Lý <span class="nav-arrow">▾</span>
+          </a>
+          <div class="nav-dropdown-panel" id="navManagePanel">
+            <div class="nav-panel-header">
+              <span class="nav-panel-icon">🖼️</span>
+              <div>
+                <div class="nav-panel-title">Quản Lý Album</div>
+                <div class="nav-panel-sub">Thêm, xóa, sửa ảnh và album</div>
+              </div>
+            </div>
+            <div class="nav-panel-actions">
+              <button class="nav-panel-btn" id="navOpenManager">
+                <span>📷</span> Quản Lý Ảnh
+              </button>
+              <button class="nav-panel-btn" id="navOpenUpload">
+                <span>⬆️</span> Thêm Ảnh Mới
+              </button>
+              <button class="nav-panel-btn" id="navClearAll">
+                <span>🗑️</span> Xóa Album Riêng
+              </button>
+              <div class="nav-panel-divider"></div>
+              <button class="nav-panel-btn" id="navShuffle">
+                <span>🔀</span> Xáo Trộn Album
+              </button>
+              <button class="nav-panel-btn" id="navExport">
+                <span>📥</span> Tải Album (ZIP)
+              </button>
+            </div>
+          </div>
+        </li>
+        <!-- Dropdown: Cài Đặt -->
+        <li class="nav-dropdown">
+          <a href="#" class="nav-dropdown-toggle" id="navSettingsToggle">
+            <span>⚙️</span> Cài Đặt
+          </a>
+          <div class="nav-dropdown-panel" id="navSettingsPanel">
+            <div class="nav-panel-header">
+              <span class="nav-panel-icon">⚙️</span>
+              <div>
+                <div class="nav-panel-title">Cài Đặt Hiển Thị</div>
+                <div class="nav-panel-sub">Tuỳ chỉnh album theo ý bạn</div>
+              </div>
+            </div>
+            <div class="nav-panel-section">
+              <div class="nav-panel-label">🎨 Màu chủ đạo</div>
+              <div class="nav-color-picker">
+                <button class="color-swatch active" data-color="pink" style="background:#C9869A" title="Hồng phấn"></button>
+                <button class="color-swatch" data-color="blue" style="background:#8AACC8" title="Xanh lavender"></button>
+                <button class="color-swatch" data-color="gold" style="background:#D4AF7A" title="Vàng gold"></button>
+                <button class="color-swatch" data-color="green" style="background:#A8BFA0" title="Xanh lá nhạt"></button>
+              </div>
+            </div>
+            <div class="nav-panel-section">
+              <div class="nav-panel-label">📐 Kiểu hiển thị album</div>
+              <div class="nav-view-picker">
+                <button class="view-swatch active" data-view="grid" title="Lưới">⊞</button>
+                <button class="view-swatch" data-view="masonry" title="Ghép">▦</button>
+                <button class="view-swatch" data-view="list" title="Danh sách">☰</button>
+              </div>
+            </div>
+            <div class="nav-panel-section">
+              <div class="nav-panel-label">🎬 Tốc độ slideshow</div>
+              <div class="nav-slider-row">
+                <span>Nhanh</span>
+                <input type="range" class="nav-range" id="navSlideSpeed" min="2" max="10" value="4" step="1">
+                <span>Chậm</span>
+              </div>
+              <div class="nav-slider-val" id="navSlideSpeedVal">4s / ảnh</div>
+            </div>
+            <div class="nav-panel-section">
+              <label class="nav-toggle-row">
+                <input type="checkbox" id="navAutoPlay" checked>
+                <span>🎬 Tự động chiếu khi vào trang</span>
+              </label>
+              <label class="nav-toggle-row">
+                <input type="checkbox" id="navPetals" checked>
+                <span>🌸 Hiệu ứng cánh hoa rơi</span>
+              </label>
+              <label class="nav-toggle-row">
+                <input type="checkbox" id="navSound" checked>
+                <span>🔊 Nhạc nền</span>
+              </label>
+            </div>
+          </div>
+        </li>
       </ul>
     </div>
   </nav>
@@ -1900,6 +2222,149 @@
 
     navLinks.querySelectorAll('a').forEach(a => {
       a.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+
+    // Dropdown: Quản Lý
+    const manageDropdown = document.querySelector('.nav-dropdown:first-of-type');
+    const manageToggle = document.getElementById('navManageToggle');
+    manageToggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isOpen = manageDropdown.classList.contains('open');
+      document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+      if (!isOpen) manageDropdown.classList.add('open');
+    });
+
+    document.getElementById('navOpenManager').addEventListener('click', () => {
+      manageDropdown.classList.remove('open');
+      openPhotoManager();
+    });
+
+    document.getElementById('navOpenUpload').addEventListener('click', () => {
+      manageDropdown.classList.remove('open');
+      document.getElementById('upload').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    document.getElementById('navClearAll').addEventListener('click', async () => {
+      manageDropdown.classList.remove('open');
+      if (confirm('Xóa toàn bộ album riêng?')) {
+        await clearAllImages();
+        await renderPersonal();
+      }
+    });
+
+    document.getElementById('navShuffle').addEventListener('click', async () => {
+      manageDropdown.classList.remove('open');
+      const images = await getAllImages();
+      for (let i = images.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [images[i], images[j]] = [images[j], images[i]];
+      }
+      for (const img of images) await saveImages([img]);
+      await renderPersonal();
+    });
+
+    document.getElementById('navExport').addEventListener('click', () => {
+      manageDropdown.classList.remove('open');
+      alert('Tính năng tải ZIP sẽ sớm ra mắt!');
+    });
+
+    // Dropdown: Cài Đặt
+    const settingsDropdown = document.querySelector('.nav-dropdown:last-of-type');
+    const settingsToggle = document.getElementById('navSettingsToggle');
+    settingsToggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isOpen = settingsDropdown.classList.contains('open');
+      document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+      if (!isOpen) settingsDropdown.classList.add('open');
+    });
+
+    // Color swatches
+    document.querySelectorAll('.color-swatch').forEach(swatch => {
+      swatch.addEventListener('click', () => {
+        document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+        swatch.classList.add('active');
+        const color = swatch.dataset.color;
+        const palettes = {
+          pink: { '--pink-accent': '#C9869A', '--pink-light': '#EBC8D8', '--pink-bg': '#F2DCE8' },
+          blue: { '--pink-accent': '#8AACC8', '--pink-light': '#B5C7D3', '--pink-bg': '#DCE8F0' },
+          gold: { '--pink-accent': '#D4AF7A', '--pink-light': '#E8D4B8', '--pink-bg': '#F5EFE0' },
+          green: { '--pink-accent': '#A8BFA0', '--pink-light': '#C8D8BC', '--pink-bg': '#E8F0E4' },
+        };
+        const p = palettes[color];
+        if (p) Object.entries(p).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
+        localStorage.setItem('hanoi_color', color);
+      });
+    });
+
+    // Load saved color
+    const savedColor = localStorage.getItem('hanoi_color');
+    if (savedColor) {
+      const swatch = document.querySelector(`.color-swatch[data-color="${savedColor}"]`);
+      if (swatch) swatch.click();
+    }
+
+    // View swatches
+    document.querySelectorAll('.nav-view-picker .view-swatch').forEach(swatch => {
+      swatch.addEventListener('click', () => {
+        document.querySelectorAll('.nav-view-picker .view-swatch').forEach(s => s.classList.remove('active'));
+        swatch.classList.add('active');
+        const view = swatch.dataset.view;
+        document.querySelectorAll('.view-btn').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+        renderDataset(view);
+        localStorage.setItem('hanoi_view', view);
+      });
+    });
+
+    // Load saved view
+    const savedView = localStorage.getItem('hanoi_view');
+    if (savedView) {
+      const swatch = document.querySelector(`.nav-view-picker .view-swatch[data-view="${savedView}"]`);
+      if (swatch) swatch.click();
+    }
+
+    // Slide speed
+    const slideSpeedSlider = document.getElementById('navSlideSpeed');
+    const slideSpeedVal = document.getElementById('navSlideSpeedVal');
+    slideSpeedSlider.addEventListener('input', () => {
+      slideSpeedVal.textContent = slideSpeedSlider.value + 's / ảnh';
+      localStorage.setItem('hanoi_slide_speed', slideSpeedSlider.value);
+    });
+
+    const savedSpeed = localStorage.getItem('hanoi_slide_speed');
+    if (savedSpeed) {
+      slideSpeedSlider.value = savedSpeed;
+      slideSpeedVal.textContent = savedSpeed + 's / ảnh';
+    }
+
+    // Toggles
+    const petalsToggle = document.getElementById('navPetals');
+    petalsToggle.addEventListener('change', () => {
+      document.querySelectorAll('.hero-petal').forEach(p => {
+        p.style.display = petalsToggle.checked ? '' : 'none';
+      });
+      localStorage.setItem('hanoi_petals', petalsToggle.checked);
+    });
+
+    const soundToggle = document.getElementById('navSound');
+    soundToggle.addEventListener('change', () => {
+      if (!soundToggle.checked) {
+        bgMusic.pause();
+        musicPlaying = false;
+      }
+      localStorage.setItem('hanoi_sound', soundToggle.checked);
+    });
+
+    // Load settings
+    if (localStorage.getItem('hanoi_petals') === 'false') {
+      petalsToggle.checked = false;
+      document.querySelectorAll('.hero-petal').forEach(p => p.style.display = 'none');
+    }
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.nav-dropdown')) {
+        document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+      }
     });
 
     /* ===== MUSIC PLAYER ===== */
