@@ -435,17 +435,34 @@
     .slideshow-slide {
       position: absolute;
       inset: 0;
-      opacity: 0;
-      transition: opacity 1.2s ease, transform 1.2s ease;
-      transform: scale(1.02);
-    }
-
-    .slideshow-slide.active {
-      opacity: 1;
-      transform: scale(1);
     }
 
     .slideshow-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Fade animation */
+    .slideshow-slide { opacity: 0; transition: opacity 0.6s ease, transform 0.6s ease; transform: scale(1.02); }
+    .slideshow-slide.active { opacity: 1; transform: scale(1); }
+
+    /* Zoom animation */
+    .slideshow-slide.zoom { opacity: 0; transform: scale(0.85); }
+    .slideshow-slide.zoom-in { opacity: 1; transform: scale(1); transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+
+    /* Slide animation */
+    .slideshow-slide.slide-left { opacity: 0; transform: translateX(80px) scale(0.95); }
+    .slideshow-slide.slide-in { opacity: 1; transform: translateX(0) scale(1); transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+
+    /* Ken Burns (gentle zoom-pan on active) */
+    @keyframes kenBurns {
+      0% { transform: scale(1) translateX(0); }
+      100% { transform: scale(1.08) translateX(-2%); }
+    }
+    .slideshow-slide.active .slideshow-img-anim { animation: kenBurns 8s ease-in-out infinite alternate; }
+
+    .slideshow-img-anim {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -1652,36 +1669,52 @@
     let ssPlaying = false;
     let ssTimer = null;
     let ssImages = [];
+    let ssEffectIdx = 0;
+    const ssEffects = ['active', 'zoom-in', 'slide-in'];
 
     function renderSlideshow(imgs) {
       ssImages = imgs;
-      slideshowTrack.innerHTML = imgs.map((src, i) => `
-        <div class="slideshow-slide ${i === 0 ? 'active' : ''}" data-index="${i}">
-          <div class="ken-burns">
-            <img src="${src}" alt="Slide ${i + 1}" loading="${i < 3 ? 'eager' : 'lazy'}">
-          </div>
+      slideshowTrack.innerHTML = '';
+      imgs.forEach((src, i) => {
+        const slide = document.createElement('div');
+        slide.className = 'slideshow-slide' + (i === 0 ? ' active' : '');
+        slide.innerHTML = `<img class="slideshow-img-anim" src="${src}" alt="Slide ${i + 1}" loading="${i < 3 ? 'eager' : 'lazy'}">
           <div class="slideshow-overlay"></div>
-          <div class="slideshow-caption">Hà Nội ${i + 1}</div>
-        </div>
-      `).join('');
-
-      slideshowDots.innerHTML = imgs.map((_, i) => `
-        <button class="slideshow-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></button>
-      `).join('');
+          <div class="slideshow-caption">Hà Nội ${i + 1}</div>`;
+        slideshowTrack.appendChild(slide);
+      });
+      slideshowDots.innerHTML = '';
+      imgs.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = 'slideshow-dot' + (i === 0 ? ' active' : '');
+        dot.dataset.index = i;
+        slideshowDots.appendChild(dot);
+      });
     }
 
-    function setSlide(index) {
+    function setSlide(index, effect) {
       const slides = slideshowTrack.querySelectorAll('.slideshow-slide');
       const dots = slideshowDots.querySelectorAll('.slideshow-dot');
       ssIndex = ((index % ssImages.length) + ssImages.length) % ssImages.length;
-      slides.forEach((s, i) => s.classList.toggle('active', i === ssIndex));
+
+      // Remove all effect classes
+      slides.forEach(s => {
+        s.classList.remove('active', 'zoom-in', 'slide-in', 'zoom', 'slide-left');
+      });
+
+      // Set the new active slide with effect
+      slides[ssIndex].className = 'slideshow-slide active ' + effect;
       dots.forEach((d, i) => d.classList.toggle('active', i === ssIndex));
     }
 
     function startSlideshow() {
       ssPlaying = true;
+      ssEffectIdx = 0;
       ssPlay.textContent = '⏸';
-      ssTimer = setInterval(() => setSlide(ssIndex + 1), 4000);
+      ssTimer = setInterval(() => {
+        ssEffectIdx = (ssEffectIdx + 1) % ssEffects.length;
+        setSlide(ssIndex + 1, ssEffects[ssEffectIdx]);
+      }, 4000);
     }
 
     function stopSlideshow() {
@@ -1694,14 +1727,12 @@
       if (ssPlaying) stopSlideshow();
       else startSlideshow();
     });
-
-    ssPrev.addEventListener('click', () => { stopSlideshow(); setSlide(ssIndex - 1); });
-    ssNext.addEventListener('click', () => { stopSlideshow(); setSlide(ssIndex + 1); });
-
+    ssPrev.addEventListener('click', () => { stopSlideshow(); setSlide(ssIndex - 1, 'active'); });
+    ssNext.addEventListener('click', () => { stopSlideshow(); setSlide(ssIndex + 1, ssEffects[(ssEffectIdx + 1) % ssEffects.length]); });
     slideshowDots.addEventListener('click', (e) => {
       if (e.target.classList.contains('slideshow-dot')) {
         stopSlideshow();
-        setSlide(parseInt(e.target.dataset.index));
+        setSlide(parseInt(e.target.dataset.index), 'active');
       }
     });
 
@@ -1848,37 +1879,80 @@
     const psClose = document.getElementById('psClose');
     const psPrev = document.getElementById('psPrev');
     const psNext = document.getElementById('psNext');
+    const psSlideWrap = personalSlideshow ? personalSlideshow.querySelector('.ps-track') : null;
 
     async function openPersonalSlideshow() {
       const images = await getAllImages();
-      if (images.length === 0) return;
+      console.log('Personal slideshow images:', images.length);
+      if (images.length === 0) {
+        alert('Chưa có ảnh nào trong album riêng! Hãy upload ảnh trước.');
+        return;
+      }
       psImages = images;
       psIndex = 0;
-      showPsSlide();
-      personalSlideshow.classList.add('active');
-      document.body.style.overflow = 'hidden';
-      // Auto advance
-      psTimer = setInterval(() => showPsSlide(psIndex + 1), 4000);
-    }
-
-    function showPsSlide(idx) {
-      psIndex = ((idx % psImages.length) + psImages.length) % psImages.length;
+      // Force show first slide
       psSlide.classList.remove('active');
-      setTimeout(() => {
-        psSlide.src = psImages[psIndex].dataUrl;
-        psSlide.classList.add('active');
-      }, 150);
-      psCounter.textContent = `${psIndex + 1} / ${psImages.length}`;
+      psSlide.src = psImages[0].dataUrl;
+      psSlide.onload = () => psSlide.classList.add('active');
+      if (psImages[0].dataUrl) psSlide.src = psImages[0].dataUrl;
+      psSlide.classList.add('active');
+      psCounter.textContent = `1 / ${psImages.length}`;
+      if (personalSlideshow) personalSlideshow.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      clearInterval(psTimer);
+      psTimer = setInterval(() => {
+        const nextIdx = (psIndex + 1) % psImages.length;
+        psIndex = nextIdx;
+        animatePsSlide(psImages[psIndex].dataUrl, psIndex);
+      }, 4000);
     }
 
-    psClose.addEventListener('click', () => {
-      personalSlideshow.classList.remove('active');
+    function animatePsSlide(src, index) {
+      // Fade out
+      psSlide.style.opacity = '0';
+      psSlide.style.transform = 'scale(0.9)';
+      setTimeout(() => {
+        psSlide.src = src;
+        psCounter.textContent = `${index + 1} / ${psImages.length}`;
+        // Fade in
+        psSlide.onload = () => {
+          psSlide.style.opacity = '1';
+          psSlide.style.transform = 'scale(1)';
+        };
+        if (psSlide.complete) {
+          psSlide.style.opacity = '1';
+          psSlide.style.transform = 'scale(1)';
+        }
+      }, 400);
+    }
+
+    function psNavigate(dir) {
+      clearInterval(psTimer);
+      psIndex = ((psIndex + dir + psImages.length) % psImages.length);
+      animatePsSlide(psImages[psIndex].dataUrl, psIndex);
+      psTimer = setInterval(() => {
+        const nextIdx = (psIndex + 1) % psImages.length;
+        psIndex = nextIdx;
+        animatePsSlide(psImages[psIndex].dataUrl, psIndex);
+      }, 4000);
+    }
+
+    if (psClose) psClose.addEventListener('click', () => {
+      if (personalSlideshow) personalSlideshow.classList.remove('active');
       document.body.style.overflow = '';
       clearInterval(psTimer);
     });
 
-    psPrev.addEventListener('click', () => { clearInterval(psTimer); showPsSlide(psIndex - 1); psTimer = setInterval(() => showPsSlide(psIndex + 1), 4000); });
-    psNext.addEventListener('click', () => { clearInterval(psTimer); showPsSlide(psIndex + 1); psTimer = setInterval(() => showPsSlide(psIndex + 1), 4000); });
+    if (psPrev) psPrev.addEventListener('click', () => psNavigate(-1));
+    if (psNext) psNext.addEventListener('click', () => psNavigate(1));
+
+    // Keyboard for personal slideshow
+    document.addEventListener('keydown', (e) => {
+      if (!personalSlideshow || !personalSlideshow.classList.contains('active')) return;
+      if (e.key === 'Escape') { psClose.click(); }
+      if (e.key === 'ArrowLeft') psNavigate(-1);
+      if (e.key === 'ArrowRight') psNavigate(1);
+    });
 
     /* ===== UPLOAD ===== */
     let pendingFiles = [];
